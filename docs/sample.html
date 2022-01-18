@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>SAMPLE</title>
+  <link rel=”shortcut icon” href=”./favicon.ico” />
+  <script src='./mml_data.js'></script>
+  <script src='./mml_bundle.js'></script>
+</head>
+
+<body>
+  <button onclick="mml_play(0);">play</button>
+  <button onclick="mml_assemble(mml_parser(mml_data.mml[1].part));">play</button>
+  <button onclick="mml_assemble(mml_parser(['o4 cdefgab>c','o5 cdefgab>c']));">play</button>
+
+  <button onclick="mml.play(0);">play</button>
+  <button onclick="mml.assemble(mml.parser(mml_data.mml[1].part));">play</button>
+  <button onclick="mml.assemble(mml.parser(['o4 cdefgab>c','o5 cdefgab>c']));">play</button>
+</body>
+
+</html>

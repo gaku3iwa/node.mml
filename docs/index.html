@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width">
+  <title>mml play for webapp</title>
+  <link rel="icon" type="image/svg+xml" href="./favicon.svg">
+  <link rel="apple-touch-icon" href="./apple-touch-icon.png">
+  <link rel="manifest" href="./manifest.json">
+  <link rel="stylesheet" href="./index.css" />
+  <script src='./mml_data.js'></script>
+  <script src='./mml_bundle.js'></script>
+  <script src="https://kit.fontawesome.com/e3fcf1f99b.js" crossorigin="anonymous"></script>
+</head>
+<body>
+
+  <div class="waku" id="data">
+    <p class="title">'mml_data.js'より、楽曲を再生</p>
+    <div id="data_play"></div>
+    <div id="data_area"></div>
+  </div>
+
+  <div class="waku" id="edit">
+    <div id="edit_play"></div>
+    <div id="edit_area"></div>
+  </div>
+
+  <script>
+    // ************************************************************************
+    // HTML要素の動的構築
+    if (mml_data.index) {
+      mml_data.index.forEach((elem, idx) => {
+        document.getElementById("data_play").innerHTML += ``
+          + `<div class="player">`
+          + `<span class="badge">${(idx + 1).toString()}</span>`
+          + `<span class="play" onclick="data_play(${elem});"><i class="far fa-play-circle"></i></span>`
+          + `<span class="stop" onclick="data_stop(${elem});"><i class="far fa-stop-circle"></i></span>`
+          + `</div>`;
+      });
+    } else {
+      mml_data.mml.forEach((_, idx) => {
+        document.getElementById("data_play").innerHTML += ``
+          + `<div class="player">`
+          + `<span class="badge">${(idx + 1).toString()}</span>`
+          + `<span class="play" onclick="data_play(${idx});"><i class="far fa-play-circle"></i></span>`
+          + `<span class="stop" onclick="data_stop(${idx});"><i class="far fa-stop-circle"></i></span>`
+          + `</div>`;
+        idx++;
+      });
+    }
+    document.getElementById("edit_play").innerHTML += ``
+      + `<div class="player">`
+      + `<span class="play" onclick="view_play();"><i class="far fa-play-circle"></i></span>`
+      + `<span class="stop" onclick="view_stop();"><i class="far fa-stop-circle"></i></span>`
+      + `</div>`;
+    document.getElementById("data_area").innerHTML += '<textarea id="list" placeholder="楽曲タイトル"></textarea>';
+    document.getElementById("edit_area").innerHTML += '<textarea id="view" placeholder="MML編集"></textarea>';
+
+    // ************************************************************************
+    // MMLファイル用のオーディオコンテキスト
+    // 利用用途は、演奏停止させるため
+    const aux = new Array(mml_data.mml.length);
+
+    // ************************************************************************
+    // 演奏開始ボタンイベント
+    const data_play = (idx) => {
+
+      if ((mml_data.mml.length - 1) < idx) return;
+      data_stop(idx);
+
+      (function (msg) {
+        document.getElementById("list").value = `${msg.trim()}`;
+      })(mml_data.mml[idx].title);
+
+      //-----------------------------------------------------------------------
+      // 楽曲演奏方法（その１）
+      aux[idx] = mml.play(idx);
+
+      //-----------------------------------------------------------------------
+      // 楽曲演奏方法（その２）
+      // aux[idx] = mml.assemble(mml.parser(mml_data.mml[idx].part));
+
+      //-----------------------------------------------------------------------
+      // MMLを表示
+      (function (mml_array) {
+        document.getElementById("view").value = `${mml_array}`.replace(/,/g, ",\n").replace(/ |:|\|/g, '');
+      })(mml_data.mml[idx].part);
+    };
+
+    // ************************************************************************
+    // 演奏停止ボタンイベント
+    const data_stop = (idx) => {
+      if ((aux[idx] ?? null) !== null) {
+        aux[idx].close();
+        aux[idx] = null;
+        document.getElementById("list").value = ``;
+      }
+    };
+
+    // ************************************************************************
+    // 編集領域用のオーディオコンテキスト
+    // 利用用途は、演奏停止させるため
+    let view_aux = null;
+
+    // ************************************************************************
+    // 編集領域のMML演奏開始
+    const view_play = () => {
+      view_stop();
+      const mml_part = document.getElementById("view").value.split(',');
+      view_aux = mml.assemble(mml.parser(mml_part));
+    };
+
+    // ************************************************************************
+    // 編集領域のMML演奏停止
+    const view_stop = () => {
+      if ((view_aux ?? null) !== null) {
+        view_aux.close();
+        view_aux = null;
+      }
+    };
+  </script>
+
+</body>
+</html>
