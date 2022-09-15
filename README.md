@@ -80,13 +80,14 @@
   * 制御コマンドで対応しても「OscillatorNode.type」指定程度かな？
 
 * [LFO](https://ja.wikipedia.org/wiki/LFO_(%E9%9B%BB%E5%AD%90%E6%A5%BD%E5%99%A8))の制御コマンドは、未実装
-  * パーサーが複雑になるから、実装してません😅
   * ビブラートやこぶしみたいな音の揺らぎ的な効果
-  * これだけでも表現力が高まるのだが…orz
+  * これだけでも表現力が高まる👍
+  * パーサーが複雑になるから、実装してません…orz
+    * でも代用として何か必要かも…考えてみるよ
 
 * [ADSR](https://ja.wikipedia.org/wiki/ADSR)の制御コマンドは、未実装
-  * パーサーが複雑になるから、実装してません😅
   * エンベロープ・パラメータ（AR, DR, SR, RR）のこと
+  * パーサーが複雑になるから、実装してません…orz
   * 代用として「v15 c1」とするところを
     * 「v15 c8 & !10 c8 & !8 c2 & !0 c4」
     * 制御コマンド（&）を拡張したので、こんな記述方法で徐々に音量が減衰できます
@@ -151,14 +152,14 @@
     * ```mml.assemble(mml.parser(['o4 cdefgab>c','o5 cdefgab>c']));```<br>
       MMLを直接記述するタイプ
 
-* 実装例
+* 実装例１
   ```
   <!DOCTYPE html>
   <html>
   <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width">
-    <title>SAMPLE</title>
+    <title>SAMPLE1</title>
     <link rel=”shortcut icon” href=”./favicon.ico” />
     <script src='./mml_data.js'></script>
     <script src='./mml_bundle.js'></script>
@@ -166,6 +167,22 @@
   <body>
     <button onclick="mml.play(0);">play</button>
     <button onclick="mml.assemble(mml.parser(mml_data.mml[1].part));">play</button>
+  </body>
+  </html>
+  ```
+
+* 実装例２
+  ```
+  <!DOCTYPE html>
+  <html>
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width">
+    <title>SAMPLE2</title>
+    <link rel=”shortcut icon” href=”./favicon.ico” />
+    <script src='./mml_bundle.js'></script>
+  </head>
+  <body>
     <button onclick="mml.assemble(mml.parser(['o4 cdefgab>c','o5 cdefgab>c']));">play</button>
   </body>
   </html>
@@ -177,8 +194,8 @@
   * 再生ボタンがクリックされる都度、MMLを分解して、Web Audio APIを組み立てる…そんな仕組みです
 
   * 工夫次第で、楽曲再生までのタイムラグは軽減できるけど…
-    * 現時点では、ゲームのBGMや効果音などの利用用途など全く念頭にありません
     * 即時応答する必要性を感じてません😅
+    * ゲームのBGMや効果音などの利用用途など全く念頭にありません
 
   * ver.1.0.3、MML編集領域（テキストエリア）を追加
     * 「**mml_data.js**」内の楽曲を再生したときにMMLを表示します
@@ -207,14 +224,18 @@
 
   * ~~「**mml_parser.js**」へMML楽曲再生に必要な処理を全部詰め込むことはできたけど、**Prettier**で勝手に整形されたくない部分を「**mml_define.js**」にまとめただけです~~
 
+  * ver.1.0.4、ライブラリとして**webpack**でモジュールバンドルを図ってみた
+    * モジュールバンドラーの使い方の勉強を兼ねて…😅
+    * これで１つにパッケージした「mml_bundle.js」だけでMML再生できるよ
+
   * MMLパーサーでは、MML文法のエラーハンドリングしてません
     * 個人的な試作品なので、取り扱いに注意してね♡
 
-  * 将来的には…FM音源的な音色対応するとか、音声合成的なこと…まで出来ればイイけど
+  * 将来的には
+    * FM音源的な音色対応するとか
+    * 音声合成的なこととか
+    * まで出来ればイイけど
     * このソースで無理・無茶する気はありません
-
-  * ver.1.0.4、ライブラリとして**webpack**でモジュールバンドルを図ってみた
-    * モジュールバンドラーの使い方の勉強を兼ねて…😅
 
 * 開発環境
   * 開発／テスト／楽曲再生、iMac(Late 2015) + VS Code + Chrome
