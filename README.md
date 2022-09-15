@@ -1,13 +1,17 @@
 > # Web Audio APIで、MML楽曲演奏
-* サンプルページは、[ここ](https://gaku3iwa.github.io/node.mml/)
+* PSG音源（ファミコンの音）的な楽曲をOscillatorNode, GainNode, StereoPannerNodeを使ってリアルタイムに再生することが目的
+
 * MDX, FMP, PMD, ...など、昔のFM音源ドライバ関連資産を多く持ってる方々は、ScriptProcessorNodeでゴリゴリやってらっしゃるようですが…
-* PSG音源（ファミコンの音）的な楽曲をOscillatorNode, GainNode, StereoPannerNodeでリアルタイムに再生することが目的
+
 * 目的を果たすため、また楽曲データの制作手段として、下記のラッパーAPIを具現化しました
   | 処理     | 役割                                                     |
   | -------- | -------------------------------------------------------- |
   | parser   | MML（Music Macro Language）パーサーで、MMLコマンドの分解 |
   | assemble | 分解したMMLコマンドに基づき、Web Audio APIの組み立て     |
+
 * MMLの詳細は…多くは語らん、[ここ](https://ja.wikipedia.org/wiki/Music_Macro_Language)を読め！
+
+* サンプルページは、[ここ](https://gaku3iwa.github.io/node.mml/)
 
 > ## 対応してるMMLコマンド
 
@@ -98,24 +102,26 @@
   * 「part配列」として、カンマ区切りで複数パートを記述できます
 
 * 構造は、こんな感じ
-  | 変数名   | １階層    | ２階層     |                   |
-  | -------- | --------- | ---------- | ----------------- |
+  | 変数名   | １階層    | ２階層     |                    |
+  | -------- | --------- | ---------- | ------------------ |
   | mml_data |
-  |          | comment   |            | 任意の文字列      |
+  |          | comment   |            | 任意の文字列       |
+  |          | index     |            | 楽曲ソート順の配列 |
   |          | mml [ 0 ] |
-  |          |           | title      | 曲のタイトル１    |
-  |          |           | part [ 0 ] | 曲のパート１のMML |
-  |          |           | part [ 1 ] | 曲のパート２のMML |
+  |          |           | title      | 曲のタイトル１     |
+  |          |           | part [ 0 ] | 曲のパート１のMML  |
+  |          |           | part [ 1 ] | 曲のパート２のMML  |
   |          | mml [ 1 ] |
-  |          |           | title      | 曲のタイトル２    |
-  |          |           | part [ 0 ] | 曲のパート１のMML |
-  |          |           | part [ 1 ] | 曲のパート２のMML |
-  |          |           | part [ 2 ] | 曲のパート３のMML |
+  |          |           | title      | 曲のタイトル２     |
+  |          |           | part [ 0 ] | 曲のパート１のMML  |
+  |          |           | part [ 1 ] | 曲のパート２のMML  |
+  |          |           | part [ 2 ] | 曲のパート３のMML  |
 
 * 具体的な「mml_data.js」の記述
   ```
   const mml_data = {
     comment: "コメント",
+    index: [1, 0],
     mml: [
       {
         title: "曲のタイトル１",
@@ -143,13 +149,13 @@
 * 実装例です
   * Web Audio APIの実装上、onloadイベントで自動的に演奏開始することはNGとされてるらしいです
   * 何らかのユーザーアクション（ボタンクリックなど）が必要になります
-    * ```mml.play(0);```<br>
+    * `mml.play(0);`<br>
       「**mml_data.js**」内の楽曲（mml配列）をインデックス番号で指定するタイプ
 
-    * ```mml.assemble(mml.parser(mml_data.mml[1].part));```<br>
+    * `mml.assemble(mml.parser(mml_data.mml[1].part));`<br>
       ```play```の中身、コレです😅
 
-    * ```mml.assemble(mml.parser(['o4 cdefgab>c','o5 cdefgab>c']));```<br>
+    * `mml.assemble(mml.parser(['o4 cdefgab>c','o5 cdefgab>c']));`<br>
       MMLを直接記述するタイプ
 
 * 実装例１
@@ -161,8 +167,8 @@
     <meta name="viewport" content="width=device-width">
     <title>SAMPLE1</title>
     <link rel=”shortcut icon” href=”./favicon.ico” />
-    <script src='./mml_data.js'></script>
-    <script src='./mml_bundle.js'></script>
+    <script src='./js/mml_data.js'></script>
+    <script src='./js/mml_bundle.js'></script>
   </head>
   <body>
     <button onclick="mml.play(0);">play</button>
@@ -180,7 +186,7 @@
     <meta name="viewport" content="width=device-width">
     <title>SAMPLE2</title>
     <link rel=”shortcut icon” href=”./favicon.ico” />
-    <script src='./mml_bundle.js'></script>
+    <script src='./js/mml_bundle.js'></script>
   </head>
   <body>
     <button onclick="mml.assemble(mml.parser(['o4 cdefgab>c','o5 cdefgab>c']));">play</button>
@@ -219,8 +225,11 @@
   |         |            | * "&"（タイ）の処理改善                            |
   |   0.0.1 | 2021.12.12 | "&"（タイ）の処理に不満あるけど、仮リリース        |
 
-* 開発メモ
+> ## 開発メモ
   * とりあえず、ピュアなJavaScript、Web Audio APIのみで、できるところまで頑張ってみた👍って感じ
+
+  * MMLパーサーでは、MML文法のエラーハンドリングしてません
+    * 個人的な試作品なので、取り扱いに注意してね♡
 
   * ~~「**mml_parser.js**」へMML楽曲再生に必要な処理を全部詰め込むことはできたけど、**Prettier**で勝手に整形されたくない部分を「**mml_define.js**」にまとめただけです~~
 
@@ -228,15 +237,12 @@
     * モジュールバンドラーの使い方の勉強を兼ねて…😅
     * これで１つにパッケージした「mml_bundle.js」だけでMML再生できるよ
 
-  * MMLパーサーでは、MML文法のエラーハンドリングしてません
-    * 個人的な試作品なので、取り扱いに注意してね♡
-
   * 将来的には
     * FM音源的な音色対応するとか
     * 音声合成的なこととか
     * まで出来ればイイけど
     * このソースで無理・無茶する気はありません
 
-* 開発環境
+> ## 開発環境
   * 開発／テスト／楽曲再生、iMac(Late 2015) + VS Code + Chrome
   * 楽曲再生、iPad mini 5th + Chrome
