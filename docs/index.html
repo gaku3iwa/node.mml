@@ -16,13 +16,13 @@
 
   <div class="waku" id="data">
     <p class="title">'mml_data.js'より、楽曲を再生</p>
-    <div id="data_play"></div>
-    <div id="data_area"></div>
+    <div id="data_player"></div>
+    <div id="data_title"></div>
   </div>
 
   <div class="waku" id="edit">
-    <div id="edit_play"></div>
-    <div id="edit_area"></div>
+    <div id="edit_player"></div>
+    <div id="edit_space"></div>
   </div>
 
   <script>
@@ -30,7 +30,7 @@
     // HTML要素の動的構築
     if (mml_data.index) {
       mml_data.index.forEach((elem, idx) => {
-        document.getElementById("data_play").innerHTML += ``
+        document.getElementById("data_player").innerHTML += ``
           + `<div class="player">`
           + `<span class="badge">${(idx + 1).toString()}</span>`
           + `<span class="play" onclick="data_play(${elem});"><i class="far fa-play-circle"></i></span>`
@@ -39,7 +39,7 @@
       });
     } else {
       mml_data.mml.forEach((_, idx) => {
-        document.getElementById("data_play").innerHTML += ``
+        document.getElementById("data_player").innerHTML += ``
           + `<div class="player">`
           + `<span class="badge">${(idx + 1).toString()}</span>`
           + `<span class="play" onclick="data_play(${idx});"><i class="far fa-play-circle"></i></span>`
@@ -48,13 +48,13 @@
         idx++;
       });
     }
-    document.getElementById("edit_play").innerHTML += ``
+    document.getElementById("edit_player").innerHTML += ``
       + `<div class="player">`
       + `<span class="play" onclick="view_play();"><i class="far fa-play-circle"></i></span>`
       + `<span class="stop" onclick="view_stop();"><i class="far fa-stop-circle"></i></span>`
       + `</div>`;
-    document.getElementById("data_area").innerHTML += '<textarea id="list" placeholder="楽曲タイトル"></textarea>';
-    document.getElementById("edit_area").innerHTML += '<textarea id="view" placeholder="MML編集"></textarea>';
+    document.getElementById("data_title").innerHTML += '<textarea id="list" placeholder="楽曲タイトル"></textarea>';
+    document.getElementById("edit_space").innerHTML += '<textarea id="view" placeholder="MML編集"></textarea>';
 
     // ************************************************************************
     // MMLファイル用のオーディオコンテキスト

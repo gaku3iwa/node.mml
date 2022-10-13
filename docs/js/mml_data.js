@@ -7,7 +7,7 @@
 // MML楽曲演奏サンプル
 const mml_data = {
   comment: "WebAudioAPIを活用したMML楽曲演奏",
-  index: [3, 4, 5, 6, 7, 8, 1, 2, 0],
+  index: [3, 4, 5, 6, 7, 8, 9, 1, 2, 0],
   mml: [
     {
       title: "デモ曲 bad apple mini ",
@@ -135,6 +135,10 @@ const mml_data = {
     {
       title: "デモSE コイン",
       part: ["o6 b16>e4.&!0e8"],
+    },
+    {
+      title: "デモSE コイン ビブラート入り",
+      part: ["o6 b16>e8&m1/5/3/4.e&!0e8"],
     },
     {
       title: "デモSE 1UP",

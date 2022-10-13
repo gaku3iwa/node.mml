@@ -1,8 +1,8 @@
 // =============================================================================
-// _parser.js
+// parser.js
 // Copyright © 2021- gaku.iwa All Rights Reserved.
 // =============================================================================
-import { O, P, Q, T, V } from "./_define.js";
+import { O, P, Q, T, V } from "./define.js";
 
 // -----------------------------------------------------------------------------
 // 制御配列を逆順に検索して、制御キーから設定値を取得する
@@ -15,7 +15,7 @@ import { O, P, Q, T, V } from "./_define.js";
 // `q`:ゲートタイム   1 ~ 8、スタッカート的な効果
 // `l`:音長
 // `&`:タイ or スラー
-const search = (ary, chr, def) => {
+const searchCTRL = (ary, chr, def) => {
   let rtn = { key: chr, value: def, index: -1 };
   for (var i = ary.length - 1; i >= 0; --i) {
     if (ary[i].ctrl !== chr) continue;
@@ -27,23 +27,39 @@ const search = (ary, chr, def) => {
 };
 
 // -----------------------------------------------------------------------------
+// 制御配列を逆順に検索して、制御キーから設定値を取得する
+// -----------------------------------------------------------------------------
+// `m`:LFO
+const searchLFO = (ary, chr) => {
+  let rtn = { key: chr, value: ``, index: -1 };
+  for (var i = ary.length - 1; i >= 0; --i) {
+    if (ary[i].ctrl !== chr) continue;
+    rtn.value = ary[i].param;
+    rtn.index = i;
+    break;
+  }
+  return rtn;
+};
+
+// -----------------------------------------------------------------------------
 // 制御配列と音階データから、Web Audio APIで利用しやすい形式へ変換
 const convert = (ary, tn) => {
   const rtn = {
-    t: Math.max(Math.min(search(ary, `t`, T.def).value, T.max), T.min),
-    v: Math.max(Math.min(search(ary, `v`, V.def).value, V.max), V.min),
-    p: Math.max(Math.min(search(ary, `p`, P.def).value, P.max), P.min),
-    o: Math.max(Math.min(search(ary, `o`, O.def).value, O.max), O.min),
-    q: Math.max(Math.min(search(ary, `q`, Q.def).value, Q.max), Q.min),
+    t: Math.max(Math.min(searchCTRL(ary, `t`, T.def).value, T.max), T.min),
+    v: Math.max(Math.min(searchCTRL(ary, `v`, V.def).value, V.max), V.min),
+    p: Math.max(Math.min(searchCTRL(ary, `p`, P.def).value, P.max), P.min),
+    o: Math.max(Math.min(searchCTRL(ary, `o`, O.def).value, O.max), O.min),
+    q: Math.max(Math.min(searchCTRL(ary, `q`, Q.def).value, Q.max), Q.min),
     tn: `c`,
     l: `4`,
     j: 0,
+    m: ``,
   };
 
   // ---------------------------------------------------------------------------
   // 音階指定の前に一時的な音量指定があった場合
   // 判定後、一時的な指定音量へ変更し、制御配列から取り除く
-  let v = search(ary, `!`, V.def);
+  let v = searchCTRL(ary, `!`, V.def);
   if (v.index !== -1) {
     rtn.v = Math.max(Math.min(v.value, V.max), V.min);
     ary.splice(v.index, 1);
@@ -52,15 +68,24 @@ const convert = (ary, tn) => {
   // ---------------------------------------------------------------------------
   // 音階指定の前にタイorスラー指定があった場合
   // 判定後、jointフラグを立てて、制御配列から取り除く
-  let j = search(ary, `&`, rtn.j);
+  let j = searchCTRL(ary, `&`, rtn.j);
   rtn.j = Math.max(Math.min(j.value, 1), 0);
   if (rtn.j === 1) {
     ary.splice(j.index, 1);
   }
 
   // ---------------------------------------------------------------------------
+  // LFO
+  // 判定後、制御配列から取り除く
+  let m = searchLFO(ary, `m`);
+  if (m.index !== -1) {
+    rtn.m = m.value;
+    ary.splice(m.index, 1);
+  }
+
+  // ---------------------------------------------------------------------------
   // 音長
-  let l = search(ary, `l`, rtn.l);
+  let l = searchCTRL(ary, `l`, rtn.l);
   rtn.l = tn.len === `` ? l.value.toString() : tn.len === `.` ? l.value.toString() + `.` : tn.len;
 
   // ---------------------------------------------------------------------------
@@ -74,7 +99,7 @@ const convert = (ary, tn) => {
 const parser = (mml_part) => {
   const parser_result = [];
   mml_part.forEach((mml) => {
-    let tmp = { ctrl: ``, param: ``, tone: ``, len: `` };
+    let tmp = { ctrl:``, param:``, tone:``, len:``, };
     let dmy = JSON.parse(JSON.stringify(tmp));
     let ctrlAry = [];
     let toneAry = [];
@@ -94,6 +119,7 @@ const parser = (mml_part) => {
         case `>`:
         case `<`:
         case `!`:
+        case `m`:
           if (dmy.ctrl !== chr || dmy.tone !== chr) {
             if (dmy.ctrl !== ``) ctrlAry.push(dmy);
             if (dmy.tone !== ``) toneAry.push(convert(ctrlAry, dmy));
@@ -120,20 +146,23 @@ const parser = (mml_part) => {
               break;
             case `>`: // オクターブ上げ
               {
-                let o = search(ctrlAry, `o`, 4);
+                let o = searchCTRL(ctrlAry, `o`, 4);
                 dmy.ctrl = o.key;
                 dmy.param = (o.value + 1).toString();
               }
               break;
             case `<`: // オクターブ下げ
               {
-                let o = search(ctrlAry, `o`, 4);
+                let o = searchCTRL(ctrlAry, `o`, 4);
                 dmy.ctrl = o.key;
                 dmy.param = (o.value - 1).toString();
               }
               break;
             case `!`: // 一時的な音量
               dmy.ctrl = `!`;
+              break;
+            case `m`: // LFO
+              dmy.ctrl = `m`;
               break;
           }
           break;
@@ -176,9 +205,15 @@ const parser = (mml_part) => {
           break;
 
         case `.`: // 付点←連続した付点（二重、三重）は、２個目以降は無視
+                  // LFOパラメータ｜小数値
+          if (dmy.ctrl === `m`) dmy.param += chr;
           if (dmy.tone !== `` && !dmy.len.includes(`.`)) {
             dmy.len += chr;
           }
+          break;
+
+        case `/`: // LFOパラメータ｜区切り文字
+          if (dmy.ctrl === `m`) dmy.param += chr;
           break;
 
         case `0`:
@@ -218,6 +253,7 @@ const parser = (mml_part) => {
         p: [],
         o: [],
         l: [],
+        m: [],
         tn: [],
       };
       if (toneAry[loop].j === 1) {
@@ -228,12 +264,14 @@ const parser = (mml_part) => {
           rtn.p.push(toneAry[loop].p);
           rtn.o.push(toneAry[loop].o);
           rtn.l.push(toneAry[loop].l);
+          rtn.m.push(toneAry[loop].m);
           rtn.tn.push(toneAry[loop].tn);
         } else {
           rtn.v.push(toneAry[loop].v);
           rtn.p.push(toneAry[loop].p);
           rtn.o.push(toneAry[loop].o);
           rtn.l.push(toneAry[loop].l);
+          rtn.m.push(toneAry[loop].m);
           rtn.tn.push(toneAry[loop].tn);
           tmpAry.push(rtn);
         }
@@ -243,6 +281,7 @@ const parser = (mml_part) => {
         rtn.p.push(toneAry[loop].p);
         rtn.o.push(toneAry[loop].o);
         rtn.l.push(toneAry[loop].l);
+        rtn.m.push(toneAry[loop].m);
         rtn.tn.push(toneAry[loop].tn);
         tmpAry.push(rtn);
       }
@@ -250,10 +289,10 @@ const parser = (mml_part) => {
 
     // -------------------------------------------------------------------------
     // デバッグログ
-    // tmpAry.forEach((x) => {
-    //   console.log(`t${("   " + x.t.toString()).slice(-3)} v[${x.v}] p[${x.p}] | o[${x.o}][${x.tn}][${x.q}][${x.l}]`);
-    // });
-    // console.log("-".repeat(40));
+    tmpAry.forEach((x) => {
+      console.log(`T${("   " + x.t.toString()).slice(-3)} Q[${x.q}] V[${x.v}] P[${x.p}] O[${x.o}][${x.tn}] L[${x.l}] LFO[${x.m}]`);
+    });
+    console.log("-".repeat(40));
 
     // -------------------------------------------------------------------------
     // パース結果をパート配列へ

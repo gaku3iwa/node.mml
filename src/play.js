@@ -1,9 +1,9 @@
 // =============================================================================
-// _play.js
+// play.js
 // Copyright © 2021- gaku.iwa All Rights Reserved.
 // =============================================================================
-import { parser } from "./_parser.js";
-import { assemble } from "./_assemble.js";
+import { assemble } from "./assemble.js";
+import { parser } from "./parser.js";
 
 // -----------------------------------------------------------------------------
 // MML再生（mml配列インデックス指定）
