@@ -97,23 +97,23 @@ const mml_data = {
       ],
     },
     {
-      title: "デモ曲 ◯◯のテーマ",
+      title: "デモ曲 ロトのテーマ",
       part: [
-        "t125 q15 o5 l8 p0        |    a.a16 a g  g g  |  f g  a b- a g     |  a b->c  d   f   d   | c <b- a  g.g16g |  a.a16 a a   f  a |      g2.&             |        g4.r        " +
-          "|: q15 o6 c 8.c 16     | l4 f g   a    b-   | >c f2      e8.d 16 |  d.   c <b 8 b 8>d 8 | c <a2   <a8.a16 |  a  a  b    >d-   | l8   d 2& d   d   e f |        g2& g d d f " +
-          "|  l4     f   e  d  c  | l8 a2&   a b- a g  |  f2   d4   f4      |  g2&  g  a   g   f   | f2 e4    c4     | >c 2&  c <a  b->c |      d 2& d  <d   e f | q16 l2 b-  a       |  f2.    :|" +
-          "|: q15 o6 c 8.c 16     | l4 f g   a    b-   | >c f2      e8.d 16 |  d.   c <b 8 b 8>d 8 | c <a2   <a8.a16 |  a  a  b    >d-   | l8   d 2& d   d   e f |        g2& g d d f " +
-          "|  l4     f   e  d  c  | l8 a2&   a b- a g  |  f2   d4   f4      |  g2&  g  a   g   f   | f2 e4    c4     | >c 2&  c <a  b->c |      d 2& d  <d   e f | q16 l2 b-  a       |  f2.    :|",
-        "t125 q15 o5 l8 p0        |    f.f16 f c  c c  | <a>c  f g  f c     |  f g  a  b- >d  <b-  | a  g  f  c.c16c |  f.f16 f f  <a >f |      c2.&             |        c4.r        " +
-          "|: q15 o5 b-8.b-16     | l4 a>c   f    f    |  f f2      f8.b-16 |  b-.  a  g+8 g+8 b-8 | a  f2    r      | <c# c# d     e    | l8   f 2& f   f   g a |       >d2& d<b b>d " +
-          "|  l4     d   c <b- b- | l8 >d-2& d-d- d-d- |  d2  <a4   a4      | >d2&  d <b   b   b   | b-2b-4   b-4    | >f+2&  f+ f+ g  a |      b-2& b- <b- >c d | q16 l2 d   e       | <a2.    :|" +
-          "|: q15 o5 b-8.b-16     | l4 a>c   f    f    |  f f2      f8.b-16 |  b-.  a  g+8 g+8 b-8 | a  f2    r      | <c# c# d     e    | l8   f 2& f   f   g a |       >d2& d<b b>d " +
-          "|  l4     d   c <b- b- | l8 >d-2& d-d- d-d- |  d2  <a4   a4      | >d2&  d <b   b   b   | b-2b-4   b-4    | >f+2&  f+ f+ g  a |      b-2& b- <b- >c d | q16 l2 d   e       | <a2.    :|",
-        "t125 q16 o4 l8 p0        |     r2.            |  r2.               |  r2.                 | r2.             |  r2.              |      r2.              |        r2          " +
-          "|: q15 o4 r4           | l4  f e  d+   d    | <a2   b-2          | >f c <f     >f       | <f a >c  f      | <a2    a2         |     >d <a f       d   |        b>d g  <g   " +
-          "|        >c2     c  e  |    <a>d- e   <a    | >d e  f    d       |  c- d g     <g       | >c c  g  b-     |  a g-  d    <d    |      g  a b-      g   | q16   >g c b-  c   |  f c <f :|" +
-          "|: q15 o4 r4           | l4  f e  d+   d    | <a2   b-2          | >f c <f     >f       | <f a >c  f      | <a2    a2         |     >d <a f       d   |        b>d g  <g   " +
-          "|        >c2     c  e  |    <a>d- e   <a    | >d e  f    d       |  c- d g     <g       | >c c  g  b-     |  a g-  d    <d    |      g  a b-      g   | q16   >g c b-  c   |  f c <f :|",
+        "t125 q7 o5 p0           | l8 a.a16        a g  g g  |  f  g    a b- a g     | a b->c            d   f   d   | c <b- a      g.g16g |  a.a16        a a   f  a     |    g4.& m1/8/5/g 2. r " +
+          "|: q7 o6 c 8.c 16     | l4 f g          a    b-   | >c  f2        e8.d 16 | d.  c            <b 8 b 8>d 8 | c <a 2      <a8.a16 |     a  a      b    >d-       | l8 d  & m1/8/5/d 2  d   e f | g&     m1/8/5/g2 d d f " +
+          "|     l4 f   e  d  c  | l8 a & m1/8/5/a2  b- a g  |     f2   d4   f4      | g& m1/8/5/g2      a   g   f   |    f 2 e 4   c4     | >   c &m1/8/5/c 2  <a  b- >c |    d  & m1/8/5/d 2 <d   e f | q8  l2 m1/16/5/1 b-  a |  f4& m1/8/5/f :|" +
+          "|: q7 o6 c 8.c 16     | l4 f g          a    b-   | >c  f2        e8.d 16 | d.  c            <b 8 b 8>d 8 | c <a 2      <a8.a16 |     a  a      b    >d-       | l8 d  & m1/8/5/d 2  d   e f | g&     m1/8/5/g2 d d f " +
+          "|     l4 f   e  d  c  | l8 a & m1/8/5/a2  b- a g  |     f2   d4   f4      | g& m1/8/5/g2      a   g   f   |    f 2 e 4   c4     | >   c &m1/8/5/c 2  <a  b- >c |    d  & m1/8/5/d 2 <d   e f | q8  l2 m1/16/5/1 b-  a |  f4& m1/8/5/f :|",
+        "t125 q7 o5 p0           | l8 f.f16        f c  c c  | <a >c    f g  f c     | f g  a            b- >d  <b-  | a  g   f     c.c16c |  f.f16        f     f  <a >f |    c4.& m1/8/5/c 2. r " +
+          "|: q7 o5 b-8.b-16     | l4 a>c          f    f    |  f  f2        f8.b-16 | b-. a             g+8 g+8 b-8 | a  f 2       r      | <c# c#        d     e        | l8 f  & m1/8/5/f 2  f   g a  | >d&    m1/8/5/d2<b   b>d " +
+          "|     l4 d   c <b- b- | l8 >d-&m1/8/5/d-2 d- d-d- |  d2<a4        a4      | >d&m1/8/5/d2     <b   b   b   |    b-2 b-4   b-4    | >f+&m1/8/5/f+2      f+ g  a  |    b- & m1/8/5/b-2 <b- >c d  | q8  l2 m1/16/5/1 d   e   | <a4& m1/8/5/a :|" +
+          "|: q7 o5 b-8.b-16     | l4 a>c          f    f    |  f  f2        f8.b-16 | b-. a             g+8 g+8 b-8 | a  f 2       r      | <c# c#        d     e        | l8 f  & m1/8/5/f 2  f   g a  | >d&    m1/8/5/d2<b   b>d " +
+          "|     l4 d   c <b- b- | l8 >d-&m1/8/5/d-2 d- d-d- |  d2<a4        a4      | >d&m1/8/5/d2     <b   b   b   |    b-2 b-4   b-4    | >f+&m1/8/5/f+2      f+ g  a  |    b- & m1/8/5/b-2 <b- >c d  | q8  l2 m1/16/5/1 d   e   | <a4& m1/8/5/a :|",
+        "t125 q8 o4 p0           | l8  r2.            |  r2.               |  r2.                 | r2.             |  r2.              |      r2.              |        r2          " +
+          "|: q7 o4 r4           | l4  f e  d+   d    | <a2   b-2          | >f c <f     >f       | <f a >c  f      | <a2    a2         |     >d <a f       d   |        b>d g  <g   " +
+          "|       >c2     c  e  |    <a>d- e   <a    | >d e  f    d       |  c- d g     <g       | >c c  g  b-     |  a g-  d    <d    |      g  a b-      g   | q8    >g c b-  c   |  f c <f :|" +
+          "|: q7 o4 r4           | l4  f e  d+   d    | <a2   b-2          | >f c <f     >f       | <f a >c  f      | <a2    a2         |     >d <a f       d   |        b>d g  <g   " +
+          "|       >c2     c  e  |    <a>d- e   <a    | >d e  f    d       |  c- d g     <g       | >c c  g  b-     |  a g-  d    <d    |      g  a b-      g   | q8    >g c b-  c   |  f c <f :|",
       ],
     },
     {
@@ -122,7 +122,7 @@ const mml_data = {
     },
     {
       title: "デモ曲 地上テーマ",
-      part: ["t180 o6 l8 q15 eere rce4 q7 g4r4 <g4r4 ", "t180 o5 l8 q15 f#f#rf# rf#f#4 q7 b4r4 r2 "],
+      part: ["t180 o6 l8 q7  eere rce4 q7 g4r4 <g4r4 ", "t180 o5 l8 q7  f#f#rf# rf#f#4 q7 b4r4 r2 "],
     },
     {
       title: "デモSE アイテム出現",

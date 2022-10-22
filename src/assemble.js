@@ -6,12 +6,17 @@ import { P, Q, V, nn, rest, toSEC } from "./define.js";
 
 // -----------------------------------------------------------------------------
 // LFOパラメータの分解、Web Audio APIで利用しやすい形式へ変換
-const parserLFO = (strParam, tempo, gatetime) => {
+const parserLFO = (strParam, tempo, def_gatetime) => {
   const rtn = {
     type: 0,
-    gateTime: 0,
-    depth: 0,
-    speed: 0,
+
+    v_gateTime: 0,
+    v_depth: 0,
+    v_speed: 0,
+
+    t_gateTime: 0,
+    t_depth: 0,
+    t_speed: 0,
   };
 
   if (strParam.length < 1) {
@@ -23,21 +28,101 @@ const parserLFO = (strParam, tempo, gatetime) => {
     //  揺らぎ効果のタイプ
     rtn.type = Number(ary[0]);
 
-    //  揺らぎ効果の深さ
-    rtn.depth = Number(ary[2]);
+    switch (rtn.type) {
+      case 1:
+        {
+          let speed = Number(ary[1]);
+          let depth = Number(ary[2]);
+          let ln = ary.length === 4 ? ary[3] || def_gatetime : def_gatetime;
 
-    //  揺らぎ効果の音長
-    let ln = ary.length === 4 ? ary[3] : gatetime;
-    if (!ln.includes(`.`)) {
-      let tm = Number(ln);
-      rtn.gateTime = toSEC(tempo, tm);
-    } else {
-      let tm = Number(ln.replace(`.`, ``));
-      rtn.gateTime = toSEC(tempo, tm) + toSEC(tempo, tm * 2);
+          //  揺らぎ効果の深さ
+          rtn.v_depth = depth;
+
+          //  揺らぎ効果の音長
+          if (!ln.includes(`.`)) {
+            let tm = Number(ln);
+            rtn.v_gateTime = toSEC(tempo, tm);
+          } else {
+            let tm = Number(ln.replace(`.`, ``));
+            rtn.v_gateTime = toSEC(tempo, tm) + toSEC(tempo, tm * 2);
+          }
+
+          //  揺らぎ効果の回数
+          rtn.v_speed = speed / rtn.v_gateTime;
+        }
+        break;
+
+      case 2:
+        {
+          let speed = Number(ary[1]);
+          let depth = Number(ary[2]) / 100.0;
+          let ln = ary.length === 4 ? ary[3] || def_gatetime : def_gatetime;
+
+          //  揺らぎ効果の深さ
+          rtn.t_depth = depth;
+
+          //  揺らぎ効果の音長
+          if (!ln.includes(`.`)) {
+            let tm = Number(ln);
+            rtn.t_gateTime = toSEC(tempo, tm);
+          } else {
+            let tm = Number(ln.replace(`.`, ``));
+            rtn.t_gateTime = toSEC(tempo, tm) + toSEC(tempo, tm * 2);
+          }
+
+          //  揺らぎ効果の回数
+          rtn.t_speed = speed / rtn.t_gateTime;
+        }
+        break;
     }
+  } else if (ary.length === 6 || ary.length === 7) {
+    //  揺らぎ効果のタイプ
+    rtn.type = Number(ary[0]);
 
-    //  揺らぎ効果の回数
-    rtn.speed = Number(ary[1]) / rtn.gateTime;
+    switch (rtn.type) {
+      case 3:
+        {
+          let speed = Number(ary[1]);
+          let depth = Number(ary[2]);
+          let ln = ary[3] || def_gatetime;
+
+          //  揺らぎ効果の深さ
+          rtn.v_depth = depth;
+
+          //  揺らぎ効果の音長
+          if (!ln.includes(`.`)) {
+            let tm = Number(ln);
+            rtn.v_gateTime = toSEC(tempo, tm);
+          } else {
+            let tm = Number(ln.replace(`.`, ``));
+            rtn.v_gateTime = toSEC(tempo, tm) + toSEC(tempo, tm * 2);
+          }
+
+          //  揺らぎ効果の回数
+          rtn.v_speed = speed / rtn.v_gateTime;
+        }
+        {
+          let speed = Number(ary[4]);
+          let depth = Number(ary[5]) / 100.0;
+          let ln = ary.length === 7 ? ary[6] || def_gatetime : def_gatetime;
+
+          //  揺らぎ効果の深さ
+          rtn.t_depth = depth;
+
+          //  揺らぎ効果の音長
+          if (!ln.includes(`.`)) {
+            let tm = Number(ln);
+            rtn.t_gateTime = toSEC(tempo, tm);
+          } else {
+            let tm = Number(ln.replace(`.`, ``));
+            rtn.t_gateTime = toSEC(tempo, tm) + toSEC(tempo, tm * 2);
+          }
+
+          //  揺らぎ効果の回数
+          rtn.t_speed = speed / rtn.t_gateTime;
+        }
+        break;
+    }
   }
   return rtn;
 };
@@ -85,23 +170,23 @@ const assemble = (parse_result) => {
 
     // -------------------------------------------------------------------------
     // LFO Node for Vibrato
-    const vib_dep = ctx.createGain();
-    vib_dep.gain.value = 0;
-    vib_dep.connect(osc.frequency); // ←周波数に作用
+    const v_dep = ctx.createGain();
+    v_dep.gain.value = 0;
+    v_dep.connect(osc.frequency); // ←周波数に作用
 
-    const vib_lfo = ctx.createOscillator();
-    vib_lfo.frequency.value = 0;
-    vib_lfo.connect(vib_dep); // ←depthに接続
+    const v_lfo = ctx.createOscillator();
+    v_lfo.frequency.value = 0;
+    v_lfo.connect(v_dep); // ←depthに接続
 
     // -------------------------------------------------------------------------
     // LFO Node for Tremolo
-    const tre_dep = ctx.createGain();
-    tre_dep.gain.value = 0;
-    tre_dep.connect(vol.gain); // ←音量に作用
+    const t_dep = ctx.createGain();
+    t_dep.gain.value = 0;
+    t_dep.connect(vol.gain); // ←音量に作用
 
-    const tre_lfo = ctx.createOscillator();
-    tre_lfo.frequency.value = 0;
-    tre_lfo.connect(tre_dep); // ←depthに接続
+    const t_lfo = ctx.createOscillator();
+    t_lfo.frequency.value = 0;
+    t_lfo.connect(t_dep); // ←depthに接続
 
     // -------------------------------------------------------------------------
     // パートの音階配列を１音毎にループ処理
@@ -123,10 +208,10 @@ const assemble = (parse_result) => {
 
             // -----------------------------------------------------------------
             // LFO Node
-            vib_dep.gain.setValueAtTime(0, Timing);
-            vib_lfo.frequency.setValueAtTime(0, Timing);
-            tre_dep.gain.setValueAtTime(0, Timing);
-            tre_lfo.frequency.setValueAtTime(0, Timing);
+            v_dep.gain.setValueAtTime(0, Timing);
+            v_lfo.frequency.setValueAtTime(0, Timing);
+            t_dep.gain.setValueAtTime(0, Timing);
+            t_lfo.frequency.setValueAtTime(0, Timing);
 
             // -----------------------------------------------------------------
             // 休符の場合、ゲートタイムを上限値に上書きする
@@ -181,17 +266,39 @@ const assemble = (parse_result) => {
                 let lfo_param = parserLFO(tn.m[idx] || ``, tn.t, tn.l[idx]);
                 switch (lfo_param.type) {
                   case 1: // Vibrato
-                    vib_dep.gain.setValueAtTime(lfo_param.depth, subTiming);
-                    vib_lfo.frequency.setValueAtTime(lfo_param.speed, subTiming);
-                    vib_dep.gain.setValueAtTime(0, subTiming + lfo_param.gateTime);
-                    vib_lfo.frequency.setValueAtTime(0, subTiming + lfo_param.gateTime);
+                    {
+                      v_dep.gain.setValueAtTime(lfo_param.v_depth, subTiming);
+                      v_lfo.frequency.setValueAtTime(lfo_param.v_speed, subTiming);
+                      v_dep.gain.setValueAtTime(0, subTiming + lfo_param.v_gateTime);
+                      v_lfo.frequency.setValueAtTime(0, subTiming + lfo_param.v_gateTime);
+                    }
                     break;
+
                   case 2: // Tremolo
-                    tre_dep.gain.setValueAtTime(lfo_param.depth, subTiming);
-                    tre_lfo.frequency.setValueAtTime(lfo_param.speed, subTiming);
-                    tre_dep.gain.setValueAtTime(0, subTiming + lfo_param.gateTime);
-                    tre_lfo.frequency.setValueAtTime(0, subTiming + lfo_param.gateTime);
+                    {
+                      let tmp_depth = val_vol * lfo_param.t_depth;
+                      t_dep.gain.setValueAtTime(tmp_depth, subTiming);
+                      t_lfo.frequency.setValueAtTime(lfo_param.t_speed, subTiming);
+                      t_dep.gain.setValueAtTime(0, subTiming + lfo_param.t_gateTime);
+                      t_lfo.frequency.setValueAtTime(0, subTiming + lfo_param.t_gateTime);
+                    }
                     break;
+
+                  case 3: // Vibrato & Tremolo
+                    {
+                      v_dep.gain.setValueAtTime(lfo_param.v_depth, subTiming);
+                      v_lfo.frequency.setValueAtTime(lfo_param.v_speed, subTiming);
+                      v_dep.gain.setValueAtTime(0, subTiming + lfo_param.v_gateTime);
+                      v_lfo.frequency.setValueAtTime(0, subTiming + lfo_param.v_gateTime);
+
+                      let tmp_depth = val_vol * lfo_param.t_depth;
+                      t_dep.gain.setValueAtTime(tmp_depth, subTiming);
+                      t_lfo.frequency.setValueAtTime(lfo_param.t_speed, subTiming);
+                      t_dep.gain.setValueAtTime(0, subTiming + lfo_param.t_gateTime);
+                      t_lfo.frequency.setValueAtTime(0, subTiming + lfo_param.t_gateTime);
+                    }
+                    break;
+
                   default:
                     break;
                 }
@@ -234,17 +341,39 @@ const assemble = (parse_result) => {
                 let lfo_param = parserLFO(tn.m[idx + 1] || ``, tn.t, tn.l[idx + 1]);
                 switch (lfo_param.type) {
                   case 1: // Vibrato
-                    vib_dep.gain.setValueAtTime(lfo_param.depth, subTiming);
-                    vib_lfo.frequency.setValueAtTime(lfo_param.speed, subTiming);
-                    vib_dep.gain.setValueAtTime(0, subTiming + lfo_param.gateTime);
-                    vib_lfo.frequency.setValueAtTime(0, subTiming + lfo_param.gateTime);
+                    {
+                      v_dep.gain.setValueAtTime(lfo_param.v_depth, subTiming);
+                      v_lfo.frequency.setValueAtTime(lfo_param.v_speed, subTiming);
+                      v_dep.gain.setValueAtTime(0, subTiming + lfo_param.v_gateTime);
+                      v_lfo.frequency.setValueAtTime(0, subTiming + lfo_param.v_gateTime);
+                    }
                     break;
+
                   case 2: // Tremolo
-                    tre_dep.gain.setValueAtTime(lfo_param.depth, subTiming);
-                    tre_lfo.frequency.setValueAtTime(lfo_param.speed, subTiming);
-                    tre_dep.gain.setValueAtTime(0, subTiming + lfo_param.gateTime);
-                    tre_lfo.frequency.setValueAtTime(0, subTiming + lfo_param.gateTime);
+                    {
+                      let tmp_depth = val_vol * lfo_param.t_depth;
+                      t_dep.gain.setValueAtTime(tmp_depth, subTiming);
+                      t_lfo.frequency.setValueAtTime(lfo_param.t_speed, subTiming);
+                      t_dep.gain.setValueAtTime(0, subTiming + lfo_param.t_gateTime);
+                      t_lfo.frequency.setValueAtTime(0, subTiming + lfo_param.t_gateTime);
+                    }
                     break;
+
+                  case 3: // Vibrato & Tremolo
+                    {
+                      v_dep.gain.setValueAtTime(lfo_param.v_depth, subTiming);
+                      v_lfo.frequency.setValueAtTime(lfo_param.v_speed, subTiming);
+                      v_dep.gain.setValueAtTime(0, subTiming + lfo_param.v_gateTime);
+                      v_lfo.frequency.setValueAtTime(0, subTiming + lfo_param.v_gateTime);
+
+                      let tmp_depth = val_vol * lfo_param.t_depth;
+                      t_dep.gain.setValueAtTime(tmp_depth, subTiming);
+                      t_lfo.frequency.setValueAtTime(lfo_param.t_speed, subTiming);
+                      t_dep.gain.setValueAtTime(0, subTiming + lfo_param.t_gateTime);
+                      t_lfo.frequency.setValueAtTime(0, subTiming + lfo_param.t_gateTime);
+                    }
+                    break;
+
                   default:
                     break;
                 }
@@ -281,8 +410,8 @@ const assemble = (parse_result) => {
             // 音量減衰 => 次の発音タイミングまでに半分まで減衰させる
             if (tn.v.length < 2) {
               let val_vol = vol.gain.value;
-              // vol.gain.linearRampToValueAtTime(val_vol * 0.5, Timing);
-              vol.gain.exponentialRampToValueAtTime(val_vol * 0.5, Timing);
+              vol.gain.linearRampToValueAtTime(val_vol * 0.5, Timing);
+              // vol.gain.exponentialRampToValueAtTime(val_vol * 0.5, Timing);
             }
           }
           break;
@@ -308,10 +437,10 @@ const assemble = (parse_result) => {
 
         // ---------------------------------------------------------------------
         // LFO Node
-        vib_dep.gain.setValueAtTime(0, Timing);
-        vib_lfo.frequency.setValueAtTime(0, Timing);
-        tre_dep.gain.setValueAtTime(0, Timing);
-        tre_lfo.frequency.setValueAtTime(0, Timing);
+        v_dep.gain.setValueAtTime(0, Timing);
+        v_lfo.frequency.setValueAtTime(0, Timing);
+        t_dep.gain.setValueAtTime(0, Timing);
+        t_lfo.frequency.setValueAtTime(0, Timing);
 
         // ---------------------------------------------------------------------
         // 無音時間の加算
@@ -327,13 +456,13 @@ const assemble = (parse_result) => {
 
     // -------------------------------------------------------------------------
     // LFO Oscillator for Vibrato
-    vib_lfo.start(tm_start);
-    vib_lfo.stop(tm_start + Timing);
+    v_lfo.start(tm_start);
+    v_lfo.stop(tm_start + Timing);
 
     // -------------------------------------------------------------------------
     // LFO Oscillator for Tremolo
-    tre_lfo.start(tm_start);
-    tre_lfo.stop(tm_start + Timing);
+    t_lfo.start(tm_start);
+    t_lfo.stop(tm_start + Timing);
 
     // -------------------------------------------------------------------------
     //  +-------+    +-------+    +-------+      +-------+

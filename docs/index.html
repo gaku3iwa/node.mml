@@ -15,13 +15,14 @@
 <body>
 
   <div class="waku" id="data">
-    <p class="title">'mml_data.js'より、楽曲を再生</p>
+    <div id="title">'mml_data.js'より、楽曲を再生</div>
     <div id="data_player"></div>
-    <div id="data_title"></div>
   </div>
 
   <div class="waku" id="edit">
-    <div id="edit_player"></div>
+    <div id="edit_player">
+      <div id="data_title"></div>
+    </div>
     <div id="edit_space"></div>
   </div>
 
@@ -33,8 +34,8 @@
         document.getElementById("data_player").innerHTML += ``
           + `<div class="player">`
           + `<span class="badge">${(idx + 1).toString()}</span>`
-          + `<span class="play" onclick="data_play(${elem});"><i class="far fa-play-circle"></i></span>`
-          + `<span class="stop" onclick="data_stop(${elem});"><i class="far fa-stop-circle"></i></span>`
+          + `<span class="play" onclick="data_play(${elem});" onmouseover="title_func(${elem})" onmouseout="title_func()"><i class="far fa-play-circle"></i></span>`
+          + `<span class="stop" onclick="data_stop(${elem});" onmouseover="title_func(${elem})" onmouseout="title_func()"><i class="far fa-stop-circle"></i></span>`
           + `</div>`;
       });
     } else {
@@ -42,8 +43,8 @@
         document.getElementById("data_player").innerHTML += ``
           + `<div class="player">`
           + `<span class="badge">${(idx + 1).toString()}</span>`
-          + `<span class="play" onclick="data_play(${idx});"><i class="far fa-play-circle"></i></span>`
-          + `<span class="stop" onclick="data_stop(${idx});"><i class="far fa-stop-circle"></i></span>`
+          + `<span class="play" onclick="data_play(${idx});" onmouseover="title_func(${idx})" onmouseout="title_func()"><i class="far fa-play-circle"></i></span>`
+          + `<span class="stop" onclick="data_stop(${idx});" onmouseover="title_func(${idx})" onmouseout="title_func()"><i class="far fa-stop-circle"></i></span>`
           + `</div>`;
         idx++;
       });
@@ -83,7 +84,7 @@
       //-----------------------------------------------------------------------
       // MMLを表示
       (function (mml_array) {
-        document.getElementById("view").value = `${mml_array}`.replace(/,/g, ",\n").replace(/ |:|\|/g, '');
+        document.getElementById("view").value = `${mml_array}`.replace(/,/g, ",\r\n\r\n").replace(/ |:|\|/g, '');
       })(mml_data.mml[idx].part);
     };
 
@@ -118,6 +119,17 @@
         view_aux = null;
       }
     };
+
+    const title_func = (idx = -1) => {
+      if (idx > -1) {
+      (function (msg) {
+        document.getElementById("list").value = `${msg.trim()}`;
+      })(mml_data.mml[idx].title);
+      } else {
+        document.getElementById("list").value = ``;
+      }
+    };
+
   </script>
 
 </body>

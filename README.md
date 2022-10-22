@@ -1,16 +1,19 @@
 > # Web Audio APIで、MML楽曲演奏
-* Vanilla JS（素のJavaScript）、Web Audio API（OscillatorNode, GainNode, StereoPannerNode, …）を使って、
+* Vanilla JS（素のJavaScript）、
+Web Audio API（OscillatorNode, GainNode, StereoPannerNode, …）を使って、
 リアルタイムにPSG音源（ファミコンの音）的な楽曲演奏することが目的
 
-* そのむかし、MDX, FMP, PMD, ...などのFM音源ドライバ関連資産を多く持ってる方々は、ScriptProcessorNodeでゴリゴリやってらっしゃるようですが…
+* 8ビットコンピュータ、16ビットコンピュータが全盛時代、
+MDX、FMP、PMD、…などのFM音源ドライバ関連資産を多く持ってる方々は、
+_`ScriptProcessorNode`_ でゴリゴリやってらっしゃるソースを散見しましたが…
 
-* 目的を果たすため、また楽曲データの制作手段として、下記のラッパーAPIを具現化しました
+* 目的を果たすため、また楽曲データの制作手段として、下記のラッパーAPIを具現化
   | 処理     | 役割                                                     |
   | -------- | -------------------------------------------------------- |
   | parser   | MML（Music Macro Language）パーサーで、MMLコマンドの分解 |
   | assemble | 分解したMMLコマンドに基づき、Web Audio APIの組み立て     |
 
-* MMLの詳細は…多くは語らん、[ここ](https://ja.wikipedia.org/wiki/Music_Macro_Language)を読め！
+* MMLの詳細は…多くは語らん、[ここ](https://ja.wikipedia.org/wiki/Music_Macro_Language)を読んで！
 
 * サンプルページは、[ここ](https://gaku3iwa.github.io/node.mml/)
 
@@ -34,13 +37,18 @@
   | &    | タイ or スラー |
   | M, m | LFO            |
 
-* 制御コマンド（&）は、内部で「linearRampToValueAtTime」を利用して音を繋いでます
-  * 指定のタイミングに向けて、音階（周波数）を直線的に変化させます
+* 制御コマンド（&）は、内部で「_[exponentialRampToValueAtTime](https://webaudio.github.io/web-audio-api/#dom-audioparam-exponentialramptovalueattime)_」を利用して音を繋いでます（ver.1.1.0 ～）
+
+  * 指定のタイミングに向けて、音階（周波数）を指数関数的に変化させます
+
   * プログラム的には、タイかスラーか全く意識してません
 
 * 制御コマンド（&）の後ろには、制御コマンド（V, !, P）も指定できます
-  * こちらでも「linearRampToValueAtTime」を利用しています
+
+  * こちらでは「_[linearRampToValueAtTime](https://webaudio.github.io/web-audio-api/#dom-audioparam-linearramptovalueattime)_」を利用しています
+
   * 音量（V, !）を指定するとフェードイン、フェードアウト的な効果が期待できます
+
   * パンポット（P）なら、音の位置（左〜中央〜右）を滑らかに移動できます
 
 >> ### 音階コマンド
@@ -79,8 +87,11 @@
   * 連符の音長の考え方は、１小節に音符がいくつ入るのか考えよう
   * 意味がわからなければ、[ここ](https://ja.wikipedia.org/wiki/%E9%9F%B3%E7%AC%A6)を読め！
 
->> ### LFOコマンドの詳細
-* M *&lt;type&gt; / &lt;speed&gt; / &lt;depth&gt; [ / &lt;gatetime&gt; ]*
+>> ### LFOコマンド その１（ver.1.1.0にて実装）
+
+>>> ### M1 */ &lt;speed&gt; / &lt;depth&gt; [ / &lt;gatetime&gt; ]*
+
+>>> ### M2 */ &lt;speed&gt; / &lt;depth&gt; [ / &lt;gatetime&gt; ]*
 
 * パラメータ表
   | cmd      | 意味               |                          |
@@ -90,18 +101,18 @@
   | depth    | 揺らぎ効果の深さ   | 省略不可                 |
   | gatetime | 揺らぎ効果の音長   | 省略可                   |
 
-* type | 揺らぎ効果のタイプ
+* ### type | 揺らぎ効果のタイプ
   * LFOコマンドとして、ビブラート効果とトレモロ効果を実装
     | type | 意味           |                            |
     | ---: | -------------- | -------------------------- |
     |    1 | ビブラート効果 | 音程（周波数）の揺らぎ     |
     |    2 | トレモロ効果   | 音量（ボリューム）の揺らぎ |
 
-* speed | 揺らぎ効果の回数
+* ### speed | 揺らぎ効果の回数
   * 揺らぎ効果の音長（getetime）の間、音の揺らす回数を指定
   * 内部的には、テンポと揺らぎ効果の音長から回数に応じた適切な周波数を求めてます
 
-* depth | 揺らぎ効果の深さ
+* ### depth | 揺らぎ効果の深さ
   * 小数値の指定も可能
   * 音の揺らす深さを指定
     | type          | 意味     |
@@ -109,22 +120,45 @@
     | 1: ビブラート | ± 周波数 |
     | 2: トレモロ   | ± 音量   |
 
-* gatetime | 揺らぎ効果の音長
+* ### gatetime | 揺らぎ効果の音長
   * 省略した場合、次の音階コマンドで指定した音長
 
-* 使用例
+* ### 使用例
   | ex.) cmd   | 意味     |          |             |              |
   | ---------- | -------- | -------- | ----------- | ------------ |
   | M1/8/10 c2 | ドの音程 | ２分音符 | ド　 ± 10Hz | ８回の揺らぎ |
-  | M2/4/.5 c2 | ドの音程 | ２分音符 | 音量 ± 0.5  | ４回の揺らぎ |
+  | M2/4/50 c2 | ドの音程 | ２分音符 | 音量 ± 50%  | ４回の揺らぎ |
+
+>> ### LFOコマンド その２（ver.1.2.0にて実装）
+
+>>> ### M3 */ &lt;v speed&gt; / &lt;v depth&gt; / [ &lt;v gatetime&gt; ] / &lt;t speed&gt; / &lt;t depth&gt; [ / &lt;t gatetime&gt; ]*
+
+* ビブラート効果とトレモロ効果を同時に適用
+  * ビブラート効果とトレモロ効果のパラメータを繋げて記述する感じで…
+
+* パラメータ表
+  | cmd        |            | 意味               |                        |
+  | ---------- | ---------- | ------------------ | ---------------------- |
+  | type       |            | 揺らぎ効果のタイプ | 3:ビブラート＆トレモロ |
+  | v speed    | ビブラート | 揺らぎ効果の回数   | 省略不可               |
+  | v depth    | ビブラート | 揺らぎ効果の深さ   | 省略不可               |
+  | v gatetime | ビブラート | 揺らぎ効果の音長   | 省略可                 |
+  | t speed    | トレモロ   | 揺らぎ効果の回数   | 省略不可               |
+  | t depth    | トレモロ   | 揺らぎ効果の深さ   | 省略不可               |
+  | t gatetime | トレモロ   | 揺らぎ効果の音長   | 省略可                 |
+
+* 使用例
+  | ex.) cmd         | 意味     |          |                           |                              |
+  | ---------------- | -------- | -------- | ------------------------- | ---------------------------- |
+  | M3/8/10//4/50 c2 | ドの音程 | ２分音符 | ド　 ± 10Hz<br>音量 ± 50% | ８回の揺らぎ<br>４回の揺らぎ |
 
 * 音の揺らぎの変化には、サイン波（"*sine*"）を使用
 
 > ## 注意事項
 
-* 使える音色（波形）は、矩形波（"*square*"）
+* 使える音色（波形）は、矩形波（"*square*"）限定
 
-* ver.1.1.0にて、LFO実装済み
+* LFOは、ver.1.1.0にて実装済み
 * ~~[LFO](https://ja.wikipedia.org/wiki/LFO_(%E9%9B%BB%E5%AD%90%E6%A5%BD%E5%99%A8))の制御コマンドは、未実装~~
   * ~~ビブラートやこぶしみたいな音の揺らぎ的な効果~~
   * ~~これだけでも表現力が高まる👍~~
@@ -192,7 +226,7 @@
   * Web Audio APIの実装上、onloadイベントで自動的に演奏開始することはNGとされてるらしいです
   * 何らかのユーザーアクション（ボタンクリックなど）が必要になります
     * `mml.play(0);`<br>
-      「**mml_data.js**」内の楽曲（mml配列）をインデックス番号で指定するタイプ
+      「_**mml_data.js**_」内の楽曲（mml配列）をインデックス番号で指定するタイプ
 
     * `mml.assemble(mml.parser(mml_data.mml[1].part));`<br>
       ```play```の中身、コレです😅
@@ -206,11 +240,9 @@
   <html>
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
-    <title>SAMPLE1</title>
-    <link rel=”shortcut icon” href=”./favicon.ico” />
-    <script src='./js/mml_data.js'></script>
+    <title>SAMPLE 1</title>
     <script src='./js/mml_bundle.js'></script>
+    <script src='./js/mml_data.js'></script>
   </head>
   <body>
     <button onclick="mml.play(0);">play</button>
@@ -225,9 +257,7 @@
   <html>
   <head>
     <meta charset="utf-8">
-    <meta name="viewport" content="width=device-width">
-    <title>SAMPLE2</title>
-    <link rel=”shortcut icon” href=”./favicon.ico” />
+    <title>SAMPLE 2</title>
     <script src='./js/mml_bundle.js'></script>
   </head>
   <body>
@@ -236,23 +266,26 @@
   </html>
   ```
 
-* サンプルの「**docs/index.html**」では「**mml_data.js**」内の楽曲（mml配列）を参照してます
+* サンプルの「_**docs/index.html**_」では「_**mml_data.js**_」内の楽曲（mml配列）を参照してます
   * 含まれる楽曲数分の再生ボタン、停止ボタンを動的に生成してます
 
   * 再生ボタンがクリックされる都度、MMLを分解、Web Audio APIで楽曲の組み立て…そんな仕組みです
 
-  * 工夫次第で、楽曲再生までのタイムラグは軽減できるけど…
+  * 工夫次第で、楽曲再生までのタイムラグは多少軽減できるけど…
     * 即時応答する必要性を感じてません😅
-    * ゲームBGMや効果音などの利用用途など…全く念頭にありません
+    * ゲームBGMや効果音などの利用用途？…全く念頭にありません
 
   * ver.1.0.3、MML編集領域（テキストエリア）を追加
-    * 「**mml_data.js**」内の楽曲を再生したときにMMLを表示します
+    * 「_**mml_data.js**_」内の楽曲を再生したときにMMLを表示します
     * 編集領域下部の再生ボタン、停止ボタンで編集領域内のMMLを演奏・停止します
 
 > ## 更新履歴
 * バージョン履歴
   | version |     更新日 | メモ                                               |
   | ------: | ---------: | -------------------------------------------------- |
+  |   1.2.0 | 2022.10.21 | 制御コマンド（M）で、LFOに対応                     |
+  |         |            | * ビブラート＆トレモロ効果(M3)を実装               |
+  |         |            |                                                    |
   |   1.1.0 | 2022.10.13 | 制御コマンド（M）で、LFOに対応                     |
   |         |            | * ビブラート効果(M1)、トレモロ効果(M2)を実装       |
   |         |            |                                                    |
@@ -276,10 +309,10 @@
   * MMLパーサーでは、MML文法のエラーハンドリングしてません
     * 個人的な試作品なので、取り扱いに注意してね♡
 
-  * ~~「**mml_parser.js**」へMML楽曲再生に必要な処理を全部詰め込むことはできたけど、**Prettier**で勝手に整形されたくない部分を「**mml_define.js**」にまとめただけです~~
-  * ver.1.0.4、ライブラリとして**webpack**でモジュールバンドルを図ってみた
+  * ~~「_**mml_parser.js**_」へMML楽曲再生に必要な処理を全部詰め込むことはできたけど、**Prettier**で勝手に整形されたくない部分を「**mml_define.js**」にまとめただけです~~
+  * ver.1.0.4にて、_**webpack**_ でモジュールバンドル化を図ってみた
     * モジュールバンドラーの使い方の勉強を兼ねて…😅
-    * これで１つにパッケージした「mml_bundle.js」だけでMML再生できるよ
+    * これで１つにパッケージ化した「_mml_bundle.js_」だけでMML再生できるよ😭
 
   * 将来的には
     * FM音源的な音色対応するとか

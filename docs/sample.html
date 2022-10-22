@@ -19,8 +19,8 @@
     'o6 b16m1/8/10>e4.&!0e8'
   ]));">coin</button>
   <button onclick="mml.assemble(mml.parser([
-    't150 o4 l4 q7 ccgg t135 aa q8 g&m2/4/.5g. t120 q7 ffee t100 dd q8 c&m1/8/5c2'
-  , 't150 o5 l4 q7 ccgg t135 aa q8 g&m2/4/.5g. t120 q7 ffee t100 dd q8 c&m1/8/5c2'
+    't150 o4 l4 q7 ccgg t135 aa q8 g&m2/4/50g. t120 q7 ffee t100 dd q8 c&m1/8/5c2'
+  , 't150 o5 l4 q7 ccgg t135 aa q8 g&m2/4/50g. t120 q7 ffee t100 dd q8 c&m1/8/5c2'
   ]));">sample</button>
   <br>
   <br>
@@ -28,18 +28,33 @@
     <legend>
       ビブラート効果
     </legend>
-    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m1/ 8/10   c1 ']));">ex1</button>
-    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m1/ 8/10/2 c1 ']));">ex2</button>
-    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m1/16/10   e2 ']));">ex3</button>
+    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m1/8/10   c1 ']));">ex1</button>
+    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m1/8/10/2 c1 ']));">ex2</button>
+    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m1/8/10   e2 ']));">ex3</button>
   </fieldset>
   <br>
   <fieldset>
     <legend>
       トレモロ効果
     </legend>
-    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m2/ 8/.5   c1 ']));">ex1</button>
-    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m2/ 8/.5/2 c1 ']));">ex2</button>
-    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m2/16/.5   e2 ']));">ex3</button>
+    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m2/8/50   c1 ']));">ex1</button>
+    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m2/8/50/2 c1 ']));">ex2</button>
+    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m2/8/50   e2 ']));">ex3</button>
+  </fieldset>
+  <br>
+  <fieldset>
+    <legend>
+      ビブラート＆トレモロ効果
+    </legend>
+    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m3/8/10/1/8/50/1 c1 ']));">ex1-1</button>
+    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m3/8/10/ /8/50/  c1 ']));">ex1-2</button>
+    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m3/8/10/ /8/50   c1 ']));">ex1-3</button>
+    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m3/8/10/2/8/50/2 c1 ']));">ex2-1</button>
+    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m3/8/10/ /8/50/2 c1 ']));">ex2-2</button>
+    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m3/8/10/2/8/50/  c1 ']));">ex2-3-1</button>
+    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m3/8/10/2/8/50   c1 ']));">ex2-3-2</button>
+    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m3/8/10/ /8/50/  e1 ']));">ex3-1</button>
+    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m3/8/10/ /8/50   e1 ']));">ex3-2</button>
   </fieldset>
   <br>
 </body>

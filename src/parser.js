@@ -100,7 +100,7 @@ const parser = (mml_part) => {
   const parser_result = [];
   mml_part.forEach((mml) => {
     let tmp = { ctrl:``, param:``, tone:``, len:``, };
-    let dmy = JSON.parse(JSON.stringify(tmp));
+    let dmy = {...tmp};
     let ctrlAry = [];
     let toneAry = [];
 
@@ -123,7 +123,7 @@ const parser = (mml_part) => {
           if (dmy.ctrl !== chr || dmy.tone !== chr) {
             if (dmy.ctrl !== ``) ctrlAry.push(dmy);
             if (dmy.tone !== ``) toneAry.push(convert(ctrlAry, dmy));
-            dmy = JSON.parse(JSON.stringify(tmp));
+            dmy = {...tmp};
           }
           switch (chr) {
             case `t`: // テンポ
@@ -171,7 +171,7 @@ const parser = (mml_part) => {
           if (dmy.ctrl !== chr || dmy.tone !== chr) {
             if (dmy.ctrl !== ``) ctrlAry.push(dmy);
             if (dmy.tone !== ``) toneAry.push(convert(ctrlAry, dmy));
-            dmy = JSON.parse(JSON.stringify(tmp));
+            dmy = {...tmp};
             dmy.ctrl = `&`;
             dmy.param = `1`;
           }
@@ -188,7 +188,7 @@ const parser = (mml_part) => {
           if (dmy.ctrl !== chr || dmy.tone !== chr) {
             if (dmy.ctrl !== ``) ctrlAry.push(dmy);
             if (dmy.tone !== ``) toneAry.push(convert(ctrlAry, dmy));
-            dmy = JSON.parse(JSON.stringify(tmp));
+            dmy = {...tmp};
           }
           dmy.tone += chr;
           break;
