@@ -2,61 +2,60 @@
 <html>
 
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>SAMPLE</title>
-  <link rel=”shortcut icon” href=”./favicon.ico” />
-  <script src='./js/mml_data.js'></script>
-  <script src='./js/mml_bundle.js'></script>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width">
+	<title>SAMPLE</title>
+	<link rel=”shortcut icon” href=”./favicon.ico” />
+	<script src='./js/mml_data.js'></script>
+	<script src='./js/node_mml_bundle.js'></script>
 </head>
 
 <body>
-  <button onclick="mml.play(0);">play</button>
-  <button onclick="mml.assemble(mml.parser(mml_data.mml[1].part));">play</button>
-  <br>
-  <br>
-  <button onclick="mml.assemble(mml.parser([
+	<button onclick="aux = new AudioContext(); node_mml.assemble(aux, node_mml.parser(mml_data.mml[1].part))">play</button>
+	<br>
+	<br>
+	<button onclick="aux = new AudioContext(); node_mml.assemble(aux, node_mml.parser([
     'o6 b16m1/8/10>e4.&!0e8'
-  ]));">coin</button>
-  <button onclick="mml.assemble(mml.parser([
+  ]))">coin</button>
+	<button onclick="aux = new AudioContext(); node_mml.assemble(aux, node_mml.parser([
     't150 o4 l4 q7 ccgg t135 aa q8 g&m2/4/50g. t120 q7 ffee t100 dd q8 c&m1/8/5c2'
   , 't150 o5 l4 q7 ccgg t135 aa q8 g&m2/4/50g. t120 q7 ffee t100 dd q8 c&m1/8/5c2'
-  ]));">sample</button>
-  <br>
-  <br>
-  <fieldset>
-    <legend>
-      ビブラート効果
-    </legend>
-    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m1/8/10   c1 ']));">ex1</button>
-    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m1/8/10/2 c1 ']));">ex2</button>
-    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m1/8/10   e2 ']));">ex3</button>
-  </fieldset>
-  <br>
-  <fieldset>
-    <legend>
-      トレモロ効果
-    </legend>
-    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m2/8/50   c1 ']));">ex1</button>
-    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m2/8/50/2 c1 ']));">ex2</button>
-    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m2/8/50   e2 ']));">ex3</button>
-  </fieldset>
-  <br>
-  <fieldset>
-    <legend>
-      ビブラート＆トレモロ効果
-    </legend>
-    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m3/8/10/1/8/50/1 c1 ']));">ex1-1</button>
-    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m3/8/10/ /8/50/  c1 ']));">ex1-2</button>
-    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m3/8/10/ /8/50   c1 ']));">ex1-3</button>
-    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m3/8/10/2/8/50/2 c1 ']));">ex2-1</button>
-    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m3/8/10/ /8/50/2 c1 ']));">ex2-2</button>
-    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m3/8/10/2/8/50/  c1 ']));">ex2-3-1</button>
-    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m3/8/10/2/8/50   c1 ']));">ex2-3-2</button>
-    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m3/8/10/ /8/50/  e1 ']));">ex3-1</button>
-    <button onclick="mml.assemble(mml.parser(['o4 ceg>c&m3/8/10/ /8/50   e1 ']));">ex3-2</button>
-  </fieldset>
-  <br>
+  ]))">sample</button>
+	<br>
+	<br>
+	<fieldset>
+		<legend>
+			ビブラート効果
+		</legend>
+		<button onclick="aux = new AudioContext(); node_mml.assemble(aux, node_mml.parser(['o4 ceg>c&m1/8/10   c1 ']))">ex1</button>
+		<button onclick="aux = new AudioContext(); node_mml.assemble(aux, node_mml.parser(['o4 ceg>c&m1/8/10/2 c1 ']))">ex2</button>
+		<button onclick="aux = new AudioContext(); node_mml.assemble(aux, node_mml.parser(['o4 ceg>c&m1/8/10   e2 ']))">ex3</button>
+	</fieldset>
+	<br>
+	<fieldset>
+		<legend>
+			トレモロ効果
+		</legend>
+		<button onclick="aux = new AudioContext(); node_mml.assemble(aux, node_mml.parser(['o4 ceg>c&m2/8/50   c1 ']))">ex1</button>
+		<button onclick="aux = new AudioContext(); node_mml.assemble(aux, node_mml.parser(['o4 ceg>c&m2/8/50/2 c1 ']))">ex2</button>
+		<button onclick="aux = new AudioContext(); node_mml.assemble(aux, node_mml.parser(['o4 ceg>c&m2/8/50   e2 ']))">ex3</button>
+	</fieldset>
+	<br>
+	<fieldset>
+		<legend>
+			ビブラート＆トレモロ効果
+		</legend>
+		<button onclick="aux = new AudioContext(); node_mml.assemble(aux, node_mml.parser(['o4 ceg>c&m3/8/10/1/8/50/1 c1 ']))">ex1-1</button>
+		<button onclick="aux = new AudioContext(); node_mml.assemble(aux, node_mml.parser(['o4 ceg>c&m3/8/10/ /8/50/  c1 ']))">ex1-2</button>
+		<button onclick="aux = new AudioContext(); node_mml.assemble(aux, node_mml.parser(['o4 ceg>c&m3/8/10/ /8/50   c1 ']))">ex1-3</button><br>
+		<button onclick="aux = new AudioContext(); node_mml.assemble(aux, node_mml.parser(['o4 ceg>c&m3/8/10/2/8/50/2 c1 ']))">ex2-1</button>
+		<button onclick="aux = new AudioContext(); node_mml.assemble(aux, node_mml.parser(['o4 ceg>c&m3/8/10/ /8/50/2 c1 ']))">ex2-2</button><br>
+		<button onclick="aux = new AudioContext(); node_mml.assemble(aux, node_mml.parser(['o4 ceg>c&m3/8/10/2/8/50/  c1 ']))">ex2-3-1</button>
+		<button onclick="aux = new AudioContext(); node_mml.assemble(aux, node_mml.parser(['o4 ceg>c&m3/8/10/2/8/50   c1 ']))">ex2-3-2</button><br>
+		<button onclick="aux = new AudioContext(); node_mml.assemble(aux, node_mml.parser(['o4 ceg>c&m3/8/10/ /8/50/  e1 ']))">ex3-1</button>
+		<button onclick="aux = new AudioContext(); node_mml.assemble(aux, node_mml.parser(['o4 ceg>c&m3/8/10/ /8/50   e1 ']))">ex3-2</button>
+	</fieldset>
+	<br>
 </body>
 
 </html>

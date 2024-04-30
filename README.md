@@ -166,11 +166,11 @@ _`ScriptProcessorNode`_ でゴリゴリやってらっしゃるソースを散�
     * ~~でも代用として何か必要かも…考えてみるよ~~
 
 * [ADSR](https://ja.wikipedia.org/wiki/ADSR)の制御コマンドは、未実装
-  * エンベロープ・パラメータ（AR, DR, SR, RR）のこと
+  * エンベロープパラメータ（AR, DR, SR, RR）のこと
   * パーサーが複雑になるから、実装してません…orz
   * 代用として「v15 c1」とするところを
     * 「v15 c8 & !10 c8 & !8 c2 & !0 c4」
-    * 制御コマンド（&）を拡張したので、こんな記述方法で徐々に音量が減衰できます
+    * 制御コマンド（&）を拡張したので、こんな記述方法で徐々に音量も減衰できます
 
 > ## MMLデータファイル構造
 * JSON形式、複数の楽曲データを収められる形式にしてます
@@ -178,25 +178,25 @@ _`ScriptProcessorNode`_ でゴリゴリやってらっしゃるソースを散�
   * 「part配列」として、カンマ区切りで複数パートを記述できます
 
 * 構造は、こんな感じ
-  | 変数名   | １階層    | ２階層     |                    |
-  | -------- | --------- | ---------- | ------------------ |
-  | mml_data |
-  |          | comment   |            | 任意の文字列       |
-  |          | index     |            | 楽曲ソート順の配列 |
-  |          | mml [ 0 ] |
-  |          |           | title      | 曲のタイトル１     |
-  |          |           | part [ 0 ] | 曲のパート１のMML  |
-  |          |           | part [ 1 ] | 曲のパート２のMML  |
-  |          | mml [ 1 ] |
-  |          |           | title      | 曲のタイトル２     |
-  |          |           | part [ 0 ] | 曲のパート１のMML  |
-  |          |           | part [ 1 ] | 曲のパート２のMML  |
-  |          |           | part [ 2 ] | 曲のパート３のMML  |
+  | １階層    | ２階層     | 内容                 | 記述 |
+  | --------- | ---------- | -------------------- | ---- |
+  |           |
+  | title     |            | アルバム的なタイトル | 任意 |
+  | index     |            | 公開する楽曲並び順   | 任意 |
+  | mml [ 0 ] |
+  |           | title      | 曲のタイトル１       |
+  |           | part [ 0 ] | 曲のパート１のMML    |
+  |           | part [ 1 ] | 曲のパート２のMML    |
+  | mml [ 1 ] |
+  |           | title      | 曲のタイトル２       |
+  |           | part [ 0 ] | 曲のパート１のMML    |
+  |           | part [ 1 ] | 曲のパート２のMML    |
+  |           | part [ 2 ] | 曲のパート３のMML    |
 
-* 具体的な「mml_data.js」の記述
+* 具体的な記述
   ```
   const mml_data = {
-    comment: "コメント",
+    title: "コメント",
     index: [1, 0],
     mml: [
       {
@@ -223,16 +223,18 @@ _`ScriptProcessorNode`_ でゴリゴリやってらっしゃるソースを散�
 
 > ## HTMLの実装
 * 実装例です
-  * Web Audio APIの実装上、onloadイベントで自動的に演奏開始することはNGとされてるらしいです
+  * Web Audio APIの実装上、`onload`イベントで自動的に演奏開始することは`NG`とされてるようです
+    * 実際に再生されません
   * 何らかのユーザーアクション（ボタンクリックなど）が必要になります
-    * `mml.play(0);`<br>
-      「_**mml_data.js**_」内の楽曲（mml配列）をインデックス番号で指定するタイプ
-
-    * `mml.assemble(mml.parser(mml_data.mml[1].part));`<br>
-      ```play```の中身、コレです😅
-
-    * `mml.assemble(mml.parser(['o4 cdefgab>c','o5 cdefgab>c']));`<br>
-      MMLを直接記述するタイプ
+    * MMLが長めな場合、「_**`js/mml_data.js`**_」内の楽曲再生するタイプ
+      * `aux = new AudioContext()`
+      * `node_mml.assemble(aux, node_mml.parser(mml_data.mml[1].part))`
+    * MMLが短めな場合、MMLを直接記述するタイプ
+      * `aux = new AudioContext()`
+      * `node_mml.assemble(aux, node_mml.parser(['o4 cdefgab>c','o5 cdefgab>c']))`
+  * ver.2.0.0、非同期処理を意識した修正
+    * イベント発火時、`AudioContext`を生成し、`node_mml.assemble`の第１引数として渡す仕様へ変更
+    * `node_mml.assemble`は、演奏終了のタイミングで`Promise`を返す仕様へ修正
 
 * 実装例１
   ```
@@ -245,8 +247,7 @@ _`ScriptProcessorNode`_ でゴリゴリやってらっしゃるソースを散�
     <script src='./js/mml_data.js'></script>
   </head>
   <body>
-    <button onclick="mml.play(0);">play</button>
-    <button onclick="mml.assemble(mml.parser(mml_data.mml[1].part));">play</button>
+    <button onclick="aux = new AudioContext(); node_mml.assemble(aux, node_mml.parser(mml_data.mml[1].part));">play</button>
   </body>
   </html>
   ```
@@ -261,28 +262,30 @@ _`ScriptProcessorNode`_ でゴリゴリやってらっしゃるソースを散�
     <script src='./js/mml_bundle.js'></script>
   </head>
   <body>
-    <button onclick="mml.assemble(mml.parser(['o4 cdefgab>c','o5 cdefgab>c']));">play</button>
+    <button onclick="aux = new AudioContext(); node_mml.assemble(aux, node_mml.parser(['o4 cdefgab>c','o5 cdefgab>c']));">play</button>
   </body>
   </html>
   ```
 
-* サンプルの「_**docs/index.html**_」では「_**mml_data.js**_」内の楽曲（mml配列）を参照してます
-  * 含まれる楽曲数分の再生ボタン、停止ボタンを動的に生成してます
-
-  * 再生ボタンがクリックされる都度、MMLを分解、Web Audio APIで楽曲の組み立て…そんな仕組みです
-
+* [サンプルページ](https://gaku3iwa.github.io/node.mml/)では、「_**`js/mml_data.js`**_」内の楽曲（mml配列）を参照してます
+  * 含まれる楽曲リストを動的に生成します
+  * 再生する都度、MMLを分解、Web Audio APIで楽曲の組み立て…そんな仕組みです
   * 工夫次第で、楽曲再生までのタイムラグは多少軽減できるけど…
     * 即時応答する必要性を感じてません😅
     * ゲームBGMや効果音などの利用用途？…全く念頭にありません
-
-  * ver.1.0.3、MML編集領域（テキストエリア）を追加
-    * 「_**mml_data.js**_」内の楽曲を再生したときにMMLを表示します
-    * 編集領域下部の再生ボタン、停止ボタンで編集領域内のMMLを演奏・停止します
+  * ~~ver.1.0.3、MML編集領域（テキストエリア）を追加~~
+    * ~~「_**`js/mml_data.js`**_」内の楽曲を再生したときにMMLを表示します~~
+    * ~~編集領域下部の再生ボタン、停止ボタンで編集領域内のMMLを演奏・停止します~~
 
 > ## 更新履歴
 * バージョン履歴
   | version |     更新日 | メモ                                               |
   | ------: | ---------: | -------------------------------------------------- |
+  |   2.0.0 |   2024.5.3 | メソッド「assemble」仕様変更                       |
+  |         |            | * 第１引数`AudioContext`へ修正                     |
+  |         |            | * 戻り値を`Promise`へ変更                          |
+  |         |            |                                                    |
+  |         |            |                                                    |
   |   1.2.0 | 2022.10.21 | 制御コマンド（M）で、LFOに対応                     |
   |         |            | * ビブラート＆トレモロ効果(M3)を実装               |
   |         |            |                                                    |
