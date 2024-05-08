@@ -10,7 +10,7 @@ body {
 }
 
 .table-height-full {
-	height: calc(100% - 56px);
+	height: calc(40% - 56px);
 	width: auto;
 }
 
@@ -23,4 +23,31 @@ body {
 	top: 50%;
 	left: 50%;
 	transform: translateY(-50%) translateX(-50%);
+}
+
+.panel {
+	max-width: 100%;
+}
+
+.panel-control {
+	position: relative;
+	border: solid 0.1px #fff;
+	border-bottom: dotted 1px #ccf;
+	background-color: aliceblue;
+}
+
+.panel-control label {
+	margin-left: 0px;
+	/* width: 100%; */
+	display: inline-block;
+}
+
+canvas#analysis-spectrum {
+	width: 100%;
+	/* width: auto; */
+}
+
+canvas#analysis-waveform {
+	width: 100%;
+	/* width: auto; */
 }

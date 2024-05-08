@@ -16,11 +16,12 @@
 </head>
 
 <body>
+	<!--
 	<div class="d-block d-sm-none p-3 text-bg-danger">狭いときに表示(sm)</div>
 	<div class="d-none d-sm-block p-3 text-bg-success">広いときに表示(sm)</div>
-
-	<div class="table-responsive table-height-full mb-0">
-		<table class="table table-hover ">
+ -->
+	<div class="table-responsive table-height-full mb-1">
+		<table class="table table-hover table-sm ">
 			<thead class="table-light sticky-top">
 				<tr>
 					<th scope="col" class="centering-parent" style="width: 4rem;"><label class="centering-children">#</label></th>
@@ -34,6 +35,28 @@
 			<tbody class="table-group-divider" id="data_list">
 			</tbody>
 		</table>
+	</div>
+
+	<div class="container-fluid ">
+		<div class="row">
+			<div class="col-12 col-sm-6 m-0 p-0">
+				<div class="panel">
+					<div class="panel-control mb-1">
+						<label for="analysis-spectrum">Spectrum</label>
+						<canvas id="analysis-spectrum"></canvas>
+					</div>
+				</div>
+			</div>
+
+			<div class="col-12 col-sm-6 m-0 p-0">
+				<div class="panel panel-default">
+					<div class="panel-control mb-1">
+						<label for="analysis-waveform">Waveform</label>
+						<canvas id="analysis-waveform"></canvas>
+					</div>
+				</div>
+			</div>
+		</div>
 	</div>
 
 </body>

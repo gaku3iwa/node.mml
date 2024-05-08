@@ -17,10 +17,10 @@ import { parserLFO } from "./lfo.js"
 //	| osciN | -> | gainN | -> | panrN |-+
 //	+-------+    +-------+    +-------+
 //
-const assemble = (aux, parse_result) => {
+const assemble = (aux, analyser, parse_result) => {
 	return new Promise((resolve) => {
-		const dst = aux.destination
-		const ctx = dst.context
+		// const dst = aux.destination
+		const ctx = aux.destination.context
 		const ary = []
 		const tm_zero = aux.currentTime
 		const tm_start = tm_zero
@@ -320,7 +320,12 @@ const assemble = (aux, parse_result) => {
 		const master = ctx.createGain()
 		master.gain.value = 1.0
 		ary.forEach((x) => x.connect(master))
-		master.connect(dst)
+		if (analyser !== null) {
+			master.connect(analyser)
+			analyser.connect(aux.destination)
+		} else {
+			master.connect(aux.destination)
+		}
 
 		//	マスターボリュームなし
 		//	+-------+      +-------+

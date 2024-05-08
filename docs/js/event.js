@@ -5,6 +5,53 @@
 const sleep = (time) => new Promise((r) => setTimeout(r, time))
 const auxArray = new Array(mml_data.mml.length)
 
+const renderAnalysis = (canvasSpectrum, canvasWaveform, analyser) => {
+	//
+	{
+		const ctxSpectrum = canvasSpectrum.getContext('2d')
+		ctxSpectrum.fillStyle = "blue"
+
+		const freqData = new Uint8Array(analyser.frequencyBinCount)
+		analyser.getByteFrequencyData(freqData)
+		const length = freqData.length
+		const W = canvasSpectrum.width
+		const H = canvasSpectrum.height
+
+		ctxSpectrum.clearRect(0, 0, W, H)
+		ctxSpectrum.beginPath()
+		ctxSpectrum.fillStyle = "#acd"
+		ctxSpectrum.moveTo(0, H)
+		const iStart = 0
+		const iStop = Math.floor(length / 2)
+		const range = iStop - iStart
+		for (let i = iStart; i <= iStop; ++i) {
+			ctxSpectrum.lineTo(W * (i - iStart) / range, H * (1 - (freqData[i] / 256.0)))
+		}
+		ctxSpectrum.lineTo(W, H)
+		ctxSpectrum.fill()
+	}
+	//
+	{
+		const ctxWaveform = canvasWaveform.getContext('2d')
+		ctxWaveform.fillStyle = "blue"
+
+		const waveData = new Uint8Array(analyser.fftSize)
+		analyser.getByteTimeDomainData(waveData)
+		const length = waveData.length
+		const W = canvasWaveform.width
+		const H = canvasWaveform.height
+
+		ctxWaveform.clearRect(0, 0, W, H)
+		ctxWaveform.beginPath()
+		ctxWaveform.strokeStyle = "#acd"
+		ctxWaveform.moveTo(0, (0.1 + 0.8 * waveData[0] / 256.0) * H)
+		for (let i = 0; i < length; ++i) {
+			ctxWaveform.lineTo(W * i / length, (0.1 + 0.8 * waveData[i] / 256.0) * H)
+		}
+		ctxWaveform.stroke()
+	}
+}
+
 // -----------------------------------------------------------------------------
 //	演奏開始ボタンイベント
 const data_play = (idx) => {
@@ -14,13 +61,35 @@ const data_play = (idx) => {
 	data_stop(idx)
 	const c = mml_data.mml[idx]
 	const aux = new AudioContext()
-	node_mml.assemble(aux, node_mml.parser(c.part))
+	const analyser = aux.createAnalyser({
+		fftSize: 1024,
+		minDecibels: -100,
+		maxDecibels: 100,
+		smoothingTimeConstant: 0
+	})
+	// analyser.fftSize = 1024
+	const canvasSpectrum = document.getElementById("analysis-spectrum")
+	const canvasWaveform = document.getElementById("analysis-waveform")
+	const loopFactry = () => {
+		let handler = {}
+		const loop = () => {
+			renderAnalysis(canvasSpectrum, canvasWaveform, analyser)
+			// 次のフレーム時の処理の実行を予約
+			handler.id = requestAnimationFrame(loop);
+		}
+		// 初回呼び出し
+		handler.id = requestAnimationFrame(loop)
+		return handler
+	}
+	let interval = loopFactry()
+	node_mml.assemble(aux, analyser, node_mml.parser(c.part))
 		.then(() => {
 			//	演奏終了、再生→表示、停止→非表示
 			playList.forEach(x => { if (x.id == idx) { p = x } })
 			stopList.forEach(x => { if (x.id == idx) { s = x } })
 			p.classList.remove(`d-none`)
 			s.classList.add(`d-none`)
+			// cancelAnimationFrame(interval.id)
 		})
 	auxArray[idx] = aux
 }
