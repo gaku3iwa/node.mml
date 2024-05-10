@@ -25,7 +25,7 @@ const renderAnalysis = (canvasSpectrum, canvasWaveform, analyser) => {
 		const iStop = Math.floor(length / 2)
 		const range = iStop - iStart
 		for (let i = iStart; i <= iStop; ++i) {
-			ctxSpectrum.lineTo(W * (i - iStart) / range, H * (1 - (freqData[i] / 256.0)))
+			ctxSpectrum.lineTo(W * (i - iStart) / range, H * (1 - (freqData[i] / 256.0) * 0.90))
 		}
 		ctxSpectrum.lineTo(W, H)
 		ctxSpectrum.fill()
