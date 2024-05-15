@@ -16,57 +16,57 @@
 </head>
 
 <body>
-	<!--
-	<div class="d-block d-sm-none p-3 text-bg-danger">狭いときに表示(sm)</div>
-	<div class="d-none d-sm-block p-3 text-bg-success">広いときに表示(sm)</div>
- -->
-	<div class="table-responsive table-height-full mb-0">
-		<table class="table table-hover table-sm ">
-			<thead class="table-light sticky-top">
-				<tr>
-					<th scope="col" class="centering-parent" style="width: 4rem;"><label class="centering-children">#</label></th>
-					<th scope="col" class="" style="width: 4rem;"></th>
-					<th scope="col" class="" style="width: auto;">
-						<div class="p-0 px-2 text-start">TITLE</div>
-						<div class="p-0 px-2 text-end d-none d-sm-block ">TIME</div>
-					</th>
-				</tr>
-			</thead>
-			<tbody class="table-group-divider" id="data_list">
-			</tbody>
-		</table>
+
+	<div class="d-none ">
+		<div class="d-block d-sm-none p-3 text-bg-danger">狭いときに表示(sm)</div>
+		<div class="d-none d-sm-block p-3 text-bg-success">広いときに表示(sm)</div>
 	</div>
 
 	<div class="container-fluid ">
-		<div class="row">
-			<div class="col-12 col-sm-6 m-0 p-0">
-				<div class="panel">
-					<div class="panel-control mb-0">
-						<label for="analysis-spectrum">Spectrum</label>
-						<canvas id="analysis-spectrum"></canvas>
-					</div>
+		<div class="row mb-1">
+			<div class="col-md-6 p-0 row-height ">
+				<div class="table-responsive table-height ">
+					<table class="table table-hover ">
+						<thead class="table-light sticky-top">
+							<tr>
+								<th scope="col" class="centering-parent" style="width: 4rem;"><label class="centering-children">#</label></th>
+								<th scope="col" class="" style="width: 4rem;"></th>
+								<th scope="col" class="" style="width: auto;">
+									<div class="p-0 px-2 text-start">TITLE</div>
+									<div class="p-0 px-2 text-end d-none d-md-block ">TIME</div>
+								</th>
+							</tr>
+						</thead>
+						<tbody class="table-group-divider" id="data_list"> </tbody>
+					</table>
 				</div>
 			</div>
-			<div class="col-12 col-sm-6 m-0 p-0">
+			<div class="col-md-6 ">
+				<div class="panel">
+					<div class="panel-control mb-0">
+						<label class="rounded-top" for="analysis-spectrum">Spectrum</label>
+						<canvas class="rounded-bottom" id="analysis-spectrum"></canvas>
+					</div>
+				</div>
 				<div class="panel panel-default">
 					<div class="panel-control mb-0">
-						<label for="analysis-waveform">Waveform</label>
-						<canvas id="analysis-waveform"></canvas>
+						<label class="rounded-top" for="analysis-waveform">Waveform</label>
+						<canvas class="rounded-bottom" id="analysis-waveform"></canvas>
 					</div>
 				</div>
 			</div>
 		</div>
-		<div class="row">
-			<div class="col-12 m-0 p-0">
-				<div class="panel">
+		<div class="row ">
+			<div class="col-12">
+				<div class="panel panel-default">
 					<div class="panel-control mb-0">
-						<!-- <label for="analysis-waveform">Waveform</label> -->
+						<label class="rounded-top" for="analysis-waveform">MML</label>
+						<textarea class="form-control rounded-0 " id="tamh"></textarea>
 					</div>
 				</div>
 			</div>
 		</div>
 	</div>
-
 </body>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js" integrity="sha384-geWF76RCwLtnZ8qwWowPQNguL3RmwHVBC9FhGdlKrxdiJJigb/j/68SIy3Te4Bkz" crossorigin="anonymous"></script>
 <!--

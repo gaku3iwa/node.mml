@@ -25,7 +25,7 @@ const renderAnalysis = (canvasSpectrum, canvasWaveform, analyser) => {
 		const iStop = Math.floor(length / 2)
 		const range = iStop - iStart
 		for (let i = iStart; i <= iStop; ++i) {
-			ctxSpectrum.lineTo(W * (i - iStart) / range, H * (1 - (freqData[i] / 256.0) * 0.90))
+			ctxSpectrum.lineTo(W * (i - iStart) / range, H * (1 - freqData[i] / 256.0))
 		}
 		ctxSpectrum.lineTo(W, H)
 		ctxSpectrum.fill()
@@ -59,7 +59,11 @@ const data_play = (idx) => {
 		return
 	}
 	data_stop(idx)
-	const c = mml_data.mml[idx]
+	const c = mml_data.mml[idx];
+	(function (mml_array) {
+		document.getElementById("tamh").value = `${mml_array}`.replace(/,/g, ",\n").replace(/ |:|\|/g, '')
+	})(c.part)
+
 	const aux = new AudioContext()
 	const analyser = aux.createAnalyser({
 		fftSize: 1024,
@@ -89,7 +93,6 @@ const data_play = (idx) => {
 			stopList.forEach(x => { if (x.id == idx) { s = x } })
 			p.classList.remove(`d-none`)
 			s.classList.add(`d-none`)
-			// cancelAnimationFrame(interval.id)
 		})
 	auxArray[idx] = aux
 }
@@ -139,7 +142,7 @@ const generateTableElementsDynamically = (elem, idx) => {
 	</td>
 	<td class="centering-parent">
 		<label name="title" id="${elem}" class="p-0 btn border-0 w-100 text-start fw-light" for="btn${elem}">${mml_data.mml[elem].title}</label>
-		<label name="title" id="${elem}" class="p-0 btn border-0 w-100 text-end d-none d-sm-block " for="btn${elem}">${data_time(elem)}</label>
+		<label name="title" id="${elem}" class="p-0 btn border-0 w-100 text-end d-none d-md-block " for="btn${elem}">${data_time(elem)}</label>
 	</td>
 </tr>
 `}
