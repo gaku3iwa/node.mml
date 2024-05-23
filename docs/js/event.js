@@ -5,12 +5,10 @@
 const sleep = (time) => new Promise((r) => setTimeout(r, time))
 const auxArray = new Array(mml_data.mml.length)
 
-const renderAnalysis = (canvasSpectrum, canvasWaveform, analyser) => {
+const renderAnalysis = (canvasSpectrum, analyser) => {
 	//
 	{
 		const ctxSpectrum = canvasSpectrum.getContext('2d')
-		ctxSpectrum.fillStyle = "blue"
-
 		const freqData = new Uint8Array(analyser.frequencyBinCount)
 		analyser.getByteFrequencyData(freqData)
 		const length = freqData.length
@@ -20,6 +18,7 @@ const renderAnalysis = (canvasSpectrum, canvasWaveform, analyser) => {
 		ctxSpectrum.clearRect(0, 0, W, H)
 		ctxSpectrum.beginPath()
 		ctxSpectrum.fillStyle = "#acd"
+		ctxSpectrum.globalAlpha = 0.75
 		ctxSpectrum.moveTo(0, H)
 		const iStart = 0
 		const iStop = Math.floor(length / 2)
@@ -31,25 +30,23 @@ const renderAnalysis = (canvasSpectrum, canvasWaveform, analyser) => {
 		ctxSpectrum.fill()
 	}
 	//
-	{
-		const ctxWaveform = canvasWaveform.getContext('2d')
-		ctxWaveform.fillStyle = "blue"
+	// {
+	// 	const ctxWaveform = canvasSpectrum.getContext('2d')
+	// 	const waveData = new Uint8Array(analyser.fftSize)
+	// 	analyser.getByteTimeDomainData(waveData)
+	// 	const length = waveData.length
+	// 	const W = canvasSpectrum.width
+	// 	const H = canvasSpectrum.height
 
-		const waveData = new Uint8Array(analyser.fftSize)
-		analyser.getByteTimeDomainData(waveData)
-		const length = waveData.length
-		const W = canvasWaveform.width
-		const H = canvasWaveform.height
-
-		ctxWaveform.clearRect(0, 0, W, H)
-		ctxWaveform.beginPath()
-		ctxWaveform.strokeStyle = "#acd"
-		ctxWaveform.moveTo(0, (0.1 + 0.8 * waveData[0] / 256.0) * H)
-		for (let i = 0; i < length; ++i) {
-			ctxWaveform.lineTo(W * i / length, (0.1 + 0.8 * waveData[i] / 256.0) * H)
-		}
-		ctxWaveform.stroke()
-	}
+	// 	ctxWaveform.beginPath()
+	// 	ctxWaveform.strokeStyle = "#acd"
+	// 	ctxWaveform.globalAlpha = 0.1
+	// 	ctxWaveform.moveTo(0, (0.1 + 0.8 * waveData[0] / 256.0) * H)
+	// 	for (let i = 0; i < length; ++i) {
+	// 		ctxWaveform.lineTo(W * i / length, (0.1 + 0.8 * waveData[i] / 256.0) * H)
+	// 	}
+	// 	ctxWaveform.stroke()
+	// }
 }
 
 // -----------------------------------------------------------------------------
@@ -66,18 +63,16 @@ const data_play = (idx) => {
 
 	const aux = new AudioContext()
 	const analyser = aux.createAnalyser({
-		fftSize: 1024,
 		minDecibels: -100,
 		maxDecibels: 100,
 		smoothingTimeConstant: 0
 	})
-	// analyser.fftSize = 1024
+	analyser.fftSize = 4096
 	const canvasSpectrum = document.getElementById("analysis-spectrum")
-	const canvasWaveform = document.getElementById("analysis-waveform")
 	const loopFactry = () => {
 		let handler = {}
 		const loop = () => {
-			renderAnalysis(canvasSpectrum, canvasWaveform, analyser)
+			renderAnalysis(canvasSpectrum, analyser)
 			// 次のフレーム時の処理の実行を予約
 			handler.id = requestAnimationFrame(loop);
 		}
@@ -142,7 +137,10 @@ const generateTableElementsDynamically = (elem, idx) => {
 	</td>
 	<td class="centering-parent">
 		<label name="title" id="${elem}" class="p-0 btn border-0 w-100 text-start fw-light" for="btn${elem}">${mml_data.mml[elem].title}</label>
-		<label name="title" id="${elem}" class="p-0 btn border-0 w-100 text-end d-none d-md-block " for="btn${elem}">${data_time(elem)}</label>
+		<label name="title" id="${elem}" class="p-0 btn border-0 w-100 text-end d-md-none d-block " for="btn${elem}">${data_time(elem)}</label>
+	</td>
+	<td class="centering-parent d-none d-md-block ">
+		<label name="title" id="${elem}" class="p-0 btn border-0 w-100 text-end " for="btn${elem}">${data_time(elem)}</label>
 	</td>
 </tr>
 `}
