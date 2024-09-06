@@ -2,17 +2,19 @@
 //	parser.js
 //	Copyright © 2021- gaku.iwa All Rights Reserved.
 //	============================================================================
-import { O, P, Q, T, V } from "./define.js"
+import { O, P, Q, T, V, Z, S } from "./define.js"
 
 //	----------------------------------------------------------------------------
 //	制御配列を逆順に検索して、制御キーから設定値を取得する
 //	----------------------------------------------------------------------------
+//	`z`:音色１(予約)   1 ~ 64
+//	`s`:音色２(予約)   1 ~ 4
 //	`t`:テンポ         1 ~ 480
+//	`q`:ゲートタイム   1 ~ 8、スタッカート的な効果
 //	`v`:音量           0 ~ 15
 //	`!`:一時的な音量   0 ~ 15
 //	`p`:パン          -8 ~ 0 ~ +8、左〜中央〜右
 //	`o`:オクターブ     1 ~ 9
-//	`q`:ゲートタイム   1 ~ 8、スタッカート的な効果
 //	`l`:音長
 //	`&`:タイ or スラー
 const searchCTRL = (ary, chr, def) => {
@@ -49,11 +51,13 @@ const searchLFO = (ary, chr) => {
 //	制御配列と音階データへ変換
 const convert = (ary, tn) => {
 	const rtn = {
+		z: Math.max(Math.min(searchCTRL(ary, `z`, Z.def).value, Z.max), Z.min),
+		s: Math.max(Math.min(searchCTRL(ary, `s`, S.def).value, S.max), S.min),
 		t: Math.max(Math.min(searchCTRL(ary, `t`, T.def).value, T.max), T.min),
+		q: Math.max(Math.min(searchCTRL(ary, `q`, Q.def).value, Q.max), Q.min),
 		v: Math.max(Math.min(searchCTRL(ary, `v`, V.def).value, V.max), V.min),
 		p: Math.max(Math.min(searchCTRL(ary, `p`, P.def).value, P.max), P.min),
 		o: Math.max(Math.min(searchCTRL(ary, `o`, O.def).value, O.max), O.min),
-		q: Math.max(Math.min(searchCTRL(ary, `q`, Q.def).value, Q.max), Q.min),
 		tn: `c`,
 		l: `4`,
 		j: 0,
@@ -122,6 +126,8 @@ const parser = (mml_part) => {
 				case `<`:
 				case `!`:
 				case `m`:
+				case `z`:
+				case `s`:
 					if (dmy.ctrl !== chr || dmy.tone !== chr) {
 						if (dmy.ctrl !== ``) ctrlAry.push(dmy)
 						if (dmy.tone !== ``) toneAry.push(convert(ctrlAry, dmy))
@@ -165,6 +171,12 @@ const parser = (mml_part) => {
 							break
 						case `m`: //	LFO
 							dmy.ctrl = `m`
+							break
+						case `z`: //	音色１
+							dmy.ctrl = `z`
+							break
+						case `s`: //	音色２
+							dmy.ctrl = `s`
 							break
 					}
 					break
@@ -249,6 +261,8 @@ const parser = (mml_part) => {
 			let rtn = {
 				t: toneAry[loop].t,
 				q: toneAry[loop].q,
+				z: toneAry[loop].z,
+				s: toneAry[loop].s,
 				v: [],
 				p: [],
 				o: [],
@@ -288,18 +302,20 @@ const parser = (mml_part) => {
 		}
 
 		//	デバッグログ
-		// tmpAry.forEach((x) => {
-		// 	let buff = ``
-		// 		+ `T${("   " + x.t.toString()).slice(-3)} `
-		// 		+ `Q[${x.q}] `
-		// 		+ `V[${x.v}] `
-		// 		+ `P[${x.p}] `
-		// 		+ `O[${x.o}][${x.tn}] `
-		// 		+ `L[${x.l}] `
-		// 		+ `LFO[${x.m}]`
-		// 	console.log(buff)
-		// })
-		// console.log("-".repeat(40))
+		tmpAry.forEach((x) => {
+			let buff = ``
+				+ `T${("   " + x.t.toString()).slice(-3)} `
+				+ `Z[${x.z}] `
+				+ `S[${x.s}] `
+				+ `Q[${x.q}] `
+				+ `V[${x.v}] `
+				+ `P[${x.p}] `
+				+ `O[${x.o}][${x.tn}] `
+				+ `L[${x.l}] `
+				+ `LFO[${x.m}]`
+			console.log(buff)
+		})
+		console.log("-".repeat(40))
 
 		//	パース結果をパート配列へ
 		parser_result.push({ toneAry: tmpAry })

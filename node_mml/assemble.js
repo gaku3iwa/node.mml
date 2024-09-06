@@ -286,6 +286,10 @@ const assemble = (aux, analyser, parse_result) => {
 			})
 
 			//	Tone Oscillator
+			//		s1:sine				正弦波
+			//		s2:square			矩形波
+			//		s3:sawtooth			のこぎり波
+			//		s4:triangle			三角波
 			osc.type = "square"
 			osc.start(tm_start)
 			osc.stop(tm_start + Timing)

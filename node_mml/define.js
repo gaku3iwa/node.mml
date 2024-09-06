@@ -16,6 +16,10 @@ const P = { min: -8, max: +8, def: 0, center: 0, left: -8, right: +8 }
 const O = { min: 1, max: 9, def: 4 }
 //	prettier-ignore
 const Q = { min: 1, max: 8, def: 8 }
+//	prettier-ignore
+const Z = { min: 1, max: 64, def: 1 }	//	音色１
+//	prettier-ignore
+const S = { min: 1, max: 4, def: 2 }	//	音色２
 
 //	----------------------------------------------------------------------------
 //	秒数へ変換
@@ -111,4 +115,4 @@ const nn = [
 	},
 ]
 
-export { O, P, Q, T, V, nn, rest, toHz, toSEC }
+export { O, P, Q, T, V, Z, S, nn, rest, toHz, toSEC }
