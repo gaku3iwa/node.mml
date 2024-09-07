@@ -302,8 +302,10 @@ const parser = (mml_part) => {
 		}
 
 		//	デバッグログ
-		tmpAry.forEach((x) => {
-			let buff = ``
+		if (IsDebug)
+		{
+			tmpAry.forEach((x) => {
+				let buff = ``
 				+ `T${("   " + x.t.toString()).slice(-3)} `
 				+ `Z[${x.z}] `
 				+ `S[${x.s}] `
@@ -313,9 +315,10 @@ const parser = (mml_part) => {
 				+ `O[${x.o}][${x.tn}] `
 				+ `L[${x.l}] `
 				+ `LFO[${x.m}]`
-			console.log(buff)
-		})
-		console.log("-".repeat(40))
+				console.log(buff)
+				})
+				console.log("-".repeat(40))
+		}
 
 		//	パース結果をパート配列へ
 		parser_result.push({ toneAry: tmpAry })
@@ -323,4 +326,10 @@ const parser = (mml_part) => {
 	return parser_result
 }
 
-export { parser }
+const DebugMode = (flag) => {
+	IsDebug = flag
+}
+
+let IsDebug = false
+
+export { parser, DebugMode }
