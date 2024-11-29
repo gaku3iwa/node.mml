@@ -1,16 +1,6 @@
 :root {
-	--panel-control-height: 13rem;
-	--panel-control-label-height: 1rem;
-	--panel-control-label-font-size: 1rem;
-	--panel-control-canvas-height: calc(var(--panel-control-height) - var(--panel-control-label-height));
-
-	--panel-control-height-sm: calc(var(--panel-control-height) - 0rem);
-	--panel-control-label-height-sm: 1rem;
-	--panel-control-label-font-size-sm: 1rem;
-	--panel-control-canvas-height-sm: calc(var(--panel-control-height-sm) - var(--panel-control-label-height-sm));
-
-	--panel-control-mml-height: var(--panel-control-canvas-height);
-	--bg-color: black;
+	--panel-control-height: 25.0rem;
+	--panel-control-height-sm: 25.0rem;
 }
 
 html {
@@ -21,7 +11,6 @@ body {
 	margin: 0;
 	padding: 0;
 	height: 100%;
-	background-color: var(--bg-color);
 }
 
 .panel {
@@ -40,7 +29,7 @@ body {
 }
 
 .row-height {
-	height: calc(100% - var(--panel-control-height) - 10px);
+	height: calc(100% - var(--panel-control-height) - 42px);
 }
 
 .table-height {
@@ -49,54 +38,40 @@ body {
 
 .panel-control {
 	position: relative;
-	background-color: var(--bf-color);
-	height: var(--panel-control-height);
-}
-
-.panel-control label {
 	background-color: aliceblue;
-	line-height: var(--panel-control-label-height);
-	padding: 0rem 1rem;
-	font-size: var(--panel-control-label-font-size);
+	height: calc(var(--panel-control-height) - 42px);
 }
 
 .panel-control canvas#analysis-spectrum {
-	background-color: aliceblue;
 	margin: 0;
 	padding: 0;
-	height: var(--panel-control-canvas-height);
 	width: 100%;
-	margin-top: -4px;
+	margin-top: 0px;
 }
 
 #tamh {
-	background-color: aliceblue;
 	font-family: monospace;
 	font-size: 14px;
 	border: 0;
 	padding: 8px;
-	height: var(--panel-control-mml-height);
-	max-height: var(--panel-control-mml-height);
-	min-height: var(--panel-control-mml-height);
+	height: calc(var(--panel-control-height) - 32px);
+	max-height: calc(var(--panel-control-height) - 32px);
+	min-height: calc(var(--panel-control-height) - 32px);
 	width: 100%;
-	margin-top: -4px;
+	margin-top: 0px;
+	border-radius: unset;
 }
 
 @media (max-width: 767.98px) {
 	.row-height {
-		height: calc(100% - var(--panel-control-height-sm) - 10px);
+		height: calc(100% - var(--panel-control-height-sm) - 42px);
 	}
 
 	.panel-control {
-		height: var(--panel-control-height-sm);
-	}
-
-	.panel-control label {
-		line-height: var(--panel-control-label-height-sm);
-		font-size: var(--panel-control-label-font-size-sm);
+		height: calc(var(--panel-control-height-sm) - 32px);
 	}
 
 	.panel-control canvas#analysis-spectrum {
-		height: var(--panel-control-canvas-height-sm);
+		height: calc(var(--panel-control-height-sm) - 32px);
 	}
 }
