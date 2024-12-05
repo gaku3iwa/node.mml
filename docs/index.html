@@ -45,25 +45,33 @@
 		</div>
 	</div>
 
-	<div class="row p-0 m-0 ">
-		<div class="col-12 col-md-6 mb-0 ">
-			<div class="panel panel-default">
-				<div class="panel-control">
-					<label class="rounded-top" for="analysis-spectrum">wave</label>
-					<canvas class="rounded-bottom" id="analysis-spectrum"></canvas>
-				</div>
+	<ul class="nav nav-tabs" id="myTab" role="tablist">
+		<li class="nav-item" role="presentation">
+		<!-- ページを開いた時に表示されている部分に関してはclass="active"とaria-selected="true"が必要 -->
+		<a href="#wave" class="nav-link text-secondary" id="detail-tab" data-bs-toggle="tab" role="tab" aria-controls="wave" aria-selected="false">
+			WAVE
+		</a>
+		</li>
+		<li class="nav-item" role="presentation">
+		<a href="#mml" class="nav-link active text-secondary" id="mml-tab" data-bs-toggle="tab" role="tab" aria-controls="mml" aria-selected="true">
+			MML
+		</a>
+		</li>
+	</ul>
+
+	<div class="tab-content" id="myTabContent">
+		<div class="tab-pane fade" id="wave" role="tabpanel" aria-labelledby="detail-tab">
+
+			<div class="panel panel-control">
+				<canvas id="analysis-spectrum"></canvas>
+			</div>
+
+		</div>
+		<div class="tab-pane fade show active" id="mml" role="tabpanel" aria-labelledby="mml-tab">
+			<div class="panel panel-control">
+				<textarea class="form-control " id="tamh"></textarea>
 			</div>
 		</div>
-
-		<div class="col-6 d-none d-md-block " id="panel-mml">
-			<div class="panel panel-default">
-				<div class="panel-control mb-0">
-					<label class="rounded-top" for="analysis-waveform">MML</label>
-					<textarea class="form-control rounded-0 " id="tamh"></textarea>
-				</div>
-			</div>
-		</div>
-
 	</div>
 
 </body>
