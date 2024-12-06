@@ -1,6 +1,5 @@
 :root {
-	--panel-control-height: 25.0rem;
-	--panel-control-height-sm: 25.0rem;
+	--panel-control-height: 30.0rem;
 }
 
 html {
@@ -11,6 +10,7 @@ body {
 	margin: 0;
 	padding: 0;
 	height: 100%;
+	background-color: aliceblue;
 }
 
 .panel {
@@ -29,7 +29,8 @@ body {
 }
 
 .row-height {
-	height: calc(100% - var(--panel-control-height) - 42px);
+	background-color: aliceblue;
+	height: calc(100% - var(--panel-control-height) - 2.0rem);
 }
 
 .table-height {
@@ -38,8 +39,7 @@ body {
 
 .panel-control {
 	position: relative;
-	background-color: aliceblue;
-	height: calc(var(--panel-control-height) - 42px);
+	height: calc(var(--panel-control-height) - 2.0rem);
 }
 
 .panel-control canvas#analysis-spectrum {
@@ -47,6 +47,8 @@ body {
 	padding: 0;
 	width: 100%;
 	margin-top: 0px;
+	background-color: var(--bs-body-bg);
+	height: calc(var(--panel-control-height) - 2.0rem);
 }
 
 #tamh {
@@ -54,24 +56,10 @@ body {
 	font-size: 14px;
 	border: 0;
 	padding: 8px;
-	height: calc(var(--panel-control-height) - 32px);
-	max-height: calc(var(--panel-control-height) - 32px);
-	min-height: calc(var(--panel-control-height) - 32px);
 	width: 100%;
 	margin-top: 0px;
 	border-radius: unset;
-}
-
-@media (max-width: 767.98px) {
-	.row-height {
-		height: calc(100% - var(--panel-control-height-sm) - 42px);
-	}
-
-	.panel-control {
-		height: calc(var(--panel-control-height-sm) - 32px);
-	}
-
-	.panel-control canvas#analysis-spectrum {
-		height: calc(var(--panel-control-height-sm) - 32px);
-	}
+	height: calc(var(--panel-control-height) - 2.0rem);
+	max-height: calc(var(--panel-control-height) - 2.0rem);
+	min-height: calc(var(--panel-control-height) - 2.0rem);
 }
